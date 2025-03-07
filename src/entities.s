@@ -237,6 +237,44 @@ scroll_lane:
     sta scrollx+1
     bra @done
 @greater_than_mid:
+    ; see if greater than max
+    ; see if hit min
+    lda scrollx+1
+    cmp #>SHIP_MAX
+    bcc @less_than_max
+    bne @greater_than_max
+    ; check low bits
+    lda scrollx
+    cmp #<SHIP_MAX
+    bcs @greater_than_max
+    bra @less_than_max
+@greater_than_max:
+    lda #<SHIP_MAX_SCROLL
+    sta scrollx
+    lda #>SHIP_MAX_SCROLL
+    sta scrollx+1
+    ; Ship sprite position is too big...put on screen correctly
+    sec
+    lda #<2048
+    ldy #Entity::_pixel_show_x
+    sbc (active_entity), y
+    sta (active_entity), y
+    lda #>2048
+    ldy #Entity::_pixel_show_x+1
+    sbc (active_entity), y
+    sta (active_entity), y
+    sec
+    lda #<640
+    ldy #Entity::_pixel_show_x
+    sbc (active_entity), y
+    sta (active_entity), y
+    lda #>640
+    ldy #Entity::_pixel_show_x+1
+    sbc (active_entity), y
+    sta (active_entity), y
+    bra @done
+@less_than_max:
+    ; This is a normal scroll between the min/max areas of the map
     ; adjust scroll
     sec
     lda scrollx
