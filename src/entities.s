@@ -205,11 +205,34 @@ ghost_sprite:
     adc ghost_y+1
     sta (active_entity), y
 
+    ; Check if sprite off screen
+    ldy #Entity::_pixel_show_x+1
+    lda (active_entity), y
+    cmp #>640
+    bcc @show_ghost
+    bne @hide_ghost
+    ; check lower bits
+    ldy #Entity::_pixel_show_x
+    lda (active_entity), y
+    cmp #<640
+    bcc @show_ghost
+    bne @hide_ghost
+@show_ghost:
+    lda #1
+    bra @update_ghost
+@hide_ghost:
+    lda #0
+@update_ghost:
+    ldy #Entity::_visible
+    sta (active_entity), y
     ldy #Entity::_sprite_num
     lda (active_entity), y
     inc
     sta param1
     jsr update_sprite
+    lda #1 ; back to visible
+    ldy #Entity::_visible
+    sta (active_entity), y
     ; restore the values
     ldy #Entity::_pixel_hold_x
     lda (active_entity), y
