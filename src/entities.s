@@ -63,8 +63,22 @@ process_entity:
     jsr move_entity
     lda sp_entity_count
     cmp #0
+    bne @check1
+    jsr scroll_lane
+    lda scrolltemp
+    sta scroll_lane1_x
+    lda scrolltemp+1
+    sta scroll_lane1_x+1
+    bra @skip_scroll
+@check1:
+    lda sp_entity_count
+    cmp #1
     bne @skip_scroll
     jsr scroll_lane
+    lda scrolltemp
+    sta scroll_lane2_x
+    lda scrolltemp+1
+    sta scroll_lane2_x+1
 @skip_scroll:
     ;jsr enemy_logic
     ;jsr mine_logic
@@ -215,44 +229,46 @@ ghost_sprite:
     sta (active_entity), y
     rts
 
+scrolltemp: .word 0
+
 scroll_lane:
     ldy #Entity::_pixel_x
     lda (active_entity), y
-    sta scrollx
+    sta scrolltemp
     ldy #Entity::_pixel_x+1
     lda (active_entity), y
-    sta scrollx+1
+    sta scrolltemp+1
     ; see if hit min
-    lda scrollx+1
+    lda scrolltemp+1
     cmp #>SHIP_MID
     bcc @less_than_mid
     bne @greater_than_mid
     ; check low bits
-    lda scrollx
+    lda scrolltemp
     cmp #<SHIP_MID
     bcs @greater_than_mid
 @less_than_mid:
     lda #0
-    sta scrollx
-    sta scrollx+1
+    sta scrolltemp
+    sta scrolltemp+1
     bra @done
 @greater_than_mid:
     ; see if greater than max
     ; see if hit min
-    lda scrollx+1
+    lda scrolltemp+1
     cmp #>SHIP_MAX
     bcc @less_than_max
     bne @greater_than_max
     ; check low bits
-    lda scrollx
+    lda scrolltemp
     cmp #<SHIP_MAX
     bcs @greater_than_max
     bra @less_than_max
 @greater_than_max:
     lda #<SHIP_MAX_SCROLL
-    sta scrollx
+    sta scrolltemp
     lda #>SHIP_MAX_SCROLL
-    sta scrollx+1
+    sta scrolltemp+1
     ; Ship sprite position is too big...put on screen correctly
     sec
     lda #<2048
@@ -277,12 +293,12 @@ scroll_lane:
     ; This is a normal scroll between the min/max areas of the map
     ; adjust scroll
     sec
-    lda scrollx
+    lda scrolltemp
     sbc #<SHIP_MID
-    sta scrollx
-    lda scrollx+1
+    sta scrolltemp
+    lda scrolltemp+1
     sbc #>SHIP_MID
-    sta scrollx+1
+    sta scrolltemp+1
     ; put ship in middle
     lda #<SHIP_MID
     ldy #Entity::_pixel_show_x

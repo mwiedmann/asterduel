@@ -1,7 +1,8 @@
 .ifndef IRQ_S
 IRQ_S = 1
 
-scrollx: .word 0
+scroll_lane1_x: .word 0
+scroll_lane2_x: .word 0
 lineval: .byte 0
 
 irq_routine:
@@ -14,8 +15,9 @@ irq_routine:
     cmp #0
     beq @top
     ; bottom
-    lda #0
+    lda scroll_lane2_x
     sta VERA_L0_HSCROLL_L
+    lda scroll_lane2_x+1
     sta VERA_L0_HSCROLL_H
     lda #<SCROLL_BOTTOM_ADJUST
     sta VERA_L0_VSCROLL_L
@@ -34,9 +36,9 @@ irq_routine:
     lda #0
     sta VERA_L0_VSCROLL_L
     sta VERA_L0_VSCROLL_H
-    lda scrollx
+    lda scroll_lane1_x
     sta VERA_L0_HSCROLL_L
-    lda scrollx+1
+    lda scroll_lane1_x+1
     sta VERA_L0_HSCROLL_H
     lda #1
     sta lineval
