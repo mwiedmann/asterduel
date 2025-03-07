@@ -17,6 +17,10 @@ irq_routine:
     lda #0
     sta VERA_L0_HSCROLL_L
     sta VERA_L0_HSCROLL_H
+    lda #<SCROLL_BOTTOM_ADJUST
+    sta VERA_L0_VSCROLL_L
+    lda #>SCROLL_BOTTOM_ADJUST
+    sta VERA_L0_VSCROLL_H
     lda #0
     sta lineval
     lda #0
@@ -27,6 +31,9 @@ irq_routine:
     sta waitflag ; Signal that its ok to draw now
     bra @continue
 @top:
+    lda #0
+    sta VERA_L0_VSCROLL_L
+    sta VERA_L0_VSCROLL_H
     lda scrollx
     sta VERA_L0_HSCROLL_L
     lda scrollx+1

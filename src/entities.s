@@ -232,12 +232,20 @@ scroll_lane:
     cmp #<SHIP_MID
     bcs @greater_than_mid
 @less_than_mid:
-    lda #<SHIP_MID
+    lda #0
     sta scrollx
-    lda #>SHIP_MID
     sta scrollx+1
     bra @done
 @greater_than_mid:
+    ; adjust scroll
+    sec
+    lda scrollx
+    sbc #<SHIP_MID
+    sta scrollx
+    lda scrollx+1
+    sbc #>SHIP_MID
+    sta scrollx+1
+    ; put ship in middle
     lda #<SHIP_MID
     ldy #Entity::_pixel_show_x
     sta (active_entity), y
@@ -315,6 +323,8 @@ move_entity:
     inx
     cpx #5
     bne @shift_y
+    ; Check pixel limits
+
     ; Copy to pixel_show
     ldy #Entity::_pixel_x
     lda (active_entity), y

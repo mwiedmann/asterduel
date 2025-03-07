@@ -22,5 +22,9 @@ for (let i=0;i<32;i++) {
     tiles.push(i===21? 0b00100000 : 0)
 }
 
+for (let i=0;i<32;i++) {
+    tiles.push(255)
+}
+
 output = new Uint8Array(tiles);
 fs.writeFileSync("build/STARS.BIN", output, "binary");
