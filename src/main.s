@@ -76,6 +76,7 @@ start:
     jsr config
     jsr create_ships
     jsr create_astbig_sprites
+    jsr launch_astbigs
 @waiting:
     lda waitflag
     cmp #0

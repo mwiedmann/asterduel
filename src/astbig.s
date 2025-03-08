@@ -20,7 +20,7 @@ ASTBIG_S = 1
 ; astbig_start_y:         .word 0<<5, 0<<5,   0<<5,   0<<5,   138<<5, 276<<5, 138<<5, 276<<5, 414<<5, 414<<5, 414<<5, 414<<5,  0<<5,  345<<5, 69<<5,  414<<5
 ; astbig_start_ang:       .word 6,    9,      9,      10,     5,      6,      12,     13,     1,      2,      13,     14,      11,    2,      10,     15
 
-astbig_start_x:         .word 0<<5, 0<<5,   576<<5, 192<<5, 384<<5, 0<<5,   576<<5, 320<<5, 192<<5, 0<<5,   576<<5, 384<<5, 128<<5, 0<<5,   576<<5, 576<<5
+astbig_start_x:         .word 0<<5, 100<<5, 200<<5, 300<<5, 400<<5, 500<<5, 600<<5, 700<<5
 astbig_start_y:         .word 0<<5, 276<<5, 138<<5, 414<<5, 0<<5,   414<<5, 414<<5, 414<<5, 0<<5,   138<<5, 276<<5, 414<<5, 0<<5,   345<<5, 0<<5,   69<<5 
 astbig_start_ang:       .word 6,    6,      12,     2,      9,      1,      13,     14,     9,      5,      13,     13,     11,     2,      10,     10  
 astbig_accel:           .byte 1,    2,      3,      1,      2,      2,      1,      1,      2,      1,      3,      4,      3,      3,      4,      4
@@ -63,10 +63,6 @@ next_astbig:
     lda astbig_start_x+1, x
     ldy #Entity::_x+1
     sta (active_entity), y
-    ; FOR TESTING...START VISIBLE
-    lda #1
-    ldy #Entity::_visible
-    sta (active_entity), y
     lda #0
     ldy #Entity::_lane
     sta (active_entity), y
@@ -79,7 +75,7 @@ next_astbig:
     ldy #Entity::_y+1
     sta (active_entity), y
     ;lda astbig_start_ang, x
-    lda #5
+    lda #3
     ldy #Entity::_ang
     clc
     adc ang_adj
@@ -148,29 +144,21 @@ next_astbig:
 @done:
     rts
 
-; launch_amount: .byte START_ASTBIG_COUNT
+launch_amount: .byte 0
 
-; launch_astbigs:
-;     lda level
-;     clc
-;     ror
-;     clc
-;     adc #START_ASTBIG_COUNT
-;     cmp #ASTBIG_COUNT ; Max astbig count
-;     bcc @count_set
-;     lda #ASTBIG_COUNT ; might be over max
-; @count_set:
-;     sta launch_amount
-;     ldx #0
-; @next_astbig:
-;     stx launch_big_accel_index
-;     phx
-;     jsr launch_astbig
-;     plx
-;     inx
-;     cpx launch_amount
-;     bne @next_astbig
-;     rts
+launch_astbigs:
+    lda #ASTBIG_COUNT ; might be over max
+    sta launch_amount
+    ldx #0
+@next_astbig:
+    stx launch_big_accel_index
+    phx
+    jsr launch_astbig
+    plx
+    inx
+    cpx launch_amount
+    bne @next_astbig
+    rts
 
 launch_big_accel_index: .byte 0
 

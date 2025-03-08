@@ -18,7 +18,7 @@ process_entities:
     sta sp_offset+1
     inc sp_entity_count
     lda sp_entity_count
-    cmp #2;ENTITY_COUNT
+    cmp #ENTITY_COUNT
     bne @next_entity
     ldx accelwait
     cpx #ENTITY_ACCEL_TICKS
@@ -73,12 +73,17 @@ process_entity:
 @check1:
     lda sp_entity_count
     cmp #1
-    bne @skip_scroll
+    bne @not_a_ship
     jsr scroll_lane
     lda scrolltemp
     sta scroll_lane2_x
     lda scrolltemp+1
     sta scroll_lane2_x+1
+    bra @skip_scroll
+@not_a_ship:
+    ; We only want to call update_sprite for the 2 main ships
+    ; The rest we only wanted to move
+    rts
 @skip_scroll:
     ;jsr enemy_logic
     ;jsr mine_logic
