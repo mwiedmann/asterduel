@@ -379,16 +379,14 @@ move_entity:
     adc (active_entity), y ; Add the _vel_y (lo bit, moves entity y position)
     ldy #Entity::_y ; Point back to _y (lo bit) so we can update it
     sta (active_entity), y ; Store the updated _y (lo bit)
-    ldy #Entity::_pixel_y ; Point to _pixel_y (lo bit) so we can update it
-    sta (active_entity), y ; Copy _y to _pixel_y (lo bit)
+    
     ldy #Entity::_y+1 ; Point to _y hi bit
     lda (active_entity), y ; Get the _y (hi bit)
     ldy #Entity::_vel_y+1 ; Point to the _vel_y (hi bit)
     adc (active_entity), y ; Add the _vel_y (hi bit, moves entity y position)
     ldy #Entity::_y+1 ; Point back to _y (hi bit) so we can update it
     sta (active_entity), y ; Store the updated _y (hi bit)
-    ldy #Entity::_pixel_y+1 ; Point to _pixel_y (hi bit) so we can update it
-    sta (active_entity), y ; Copy _y to _pixel_y (hi bit)
+    
     ; Add velocity to x position
     ldy #Entity::_x ; Point to _x lo bit
     lda (active_entity), y ; Get the _x (lo bit)
@@ -397,16 +395,78 @@ move_entity:
     adc (active_entity), y ; Add the _vel_x (lo bit, moves entity x position)
     ldy #Entity::_x ; Point back to _x (lo bit) so we can update it
     sta (active_entity), y ; Store the updated _x (lo bit)
-    ldy #Entity::_pixel_x ; Point to _pixel_x (lo bit) so we can update it
-    sta (active_entity), y ; Copy _x to _pixel_x (lo bit)
+    
     ldy #Entity::_x+1 ; Point to _x hi bit
     lda (active_entity), y ; Get the _x (hi bit)
     ldy #Entity::_vel_x+1 ; Point to the _vel_x (hi bit)
     adc (active_entity), y ; Add the _vel_x (hi bit, moves entity x position)
     ldy #Entity::_x+1 ; Point back to _x (hi bit) so we can update it
     sta (active_entity), y ; Store the updated _x (hi bit)
+    ; Check y bounds
+    ; First check for a LARGE y pos (means went off top to negative number)
+    ldy #Entity::_y+1 ; Point to _y hi bit
+    lda (active_entity), y
+    cmp #>LANE_BOTTOM_Y_BIG
+    bcc @less_than_lane_bottom_big
+    bne @greater_than_lane_bottom_big
+    ; check low bits
+    ldy #Entity::_y ; Point to _y lo bit
+    lda (active_entity), y
+    cmp #<LANE_BOTTOM_Y_BIG
+    bcs @greater_than_lane_bottom_big
+    bra @less_than_lane_bottom_big
+@greater_than_lane_bottom_big:
+    ; set to bottom of lane
+    ldy #Entity::_y ; Point to _y lo bit
+    lda #<LANE_BOTTOM_Y
+    sta (active_entity), y
+    ldy #Entity::_y+1
+    lda #>LANE_BOTTOM_Y
+    sta (active_entity), y
+    bra @update_pixels
+@less_than_lane_bottom_big:
+    ; Second check for a smaller y pos (means went off bottom of lane)
+    ldy #Entity::_y+1 ; Point to _y hi bit
+    lda (active_entity), y
+    cmp #>LANE_BOTTOM_Y
+    bcc @less_than_lane_bottom
+    bne @greater_than_lane_bottom
+    ; check low bits
+    ldy #Entity::_y ; Point to _y lo bit
+    lda (active_entity), y
+    cmp #<LANE_BOTTOM_Y
+    bcs @greater_than_lane_bottom
+    bra @less_than_lane_bottom
+@greater_than_lane_bottom:
+    ; set to top of lane
+    ldy #Entity::_y ; Point to _y lo bit
+    lda #0
+    sta (active_entity), y
+    ldy #Entity::_y+1
+    sta (active_entity), y
+@less_than_lane_bottom:
+@update_pixels:
+    ; update pixels
+    ldy #Entity::_y ; Point to _y lo bit
+    lda (active_entity), y ; Get the _y (lo bit)
+    ldy #Entity::_pixel_y ; Point to _pixel_y (lo bit) so we can update it
+    sta (active_entity), y ; Copy _y to _pixel_y (lo bit)
+
+    ldy #Entity::_y+1 ; Point to _y hi bit
+    lda (active_entity), y ; Get the _y (hi bit)
+    ldy #Entity::_pixel_y+1 ; Point to _pixel_y (hi bit) so we can update it
+    sta (active_entity), y ; Copy _y to _pixel_y (hi bit)
+
+    ldy #Entity::_x ; Point to _x lo bit
+    lda (active_entity), y ; Get the _x (lo bit)
+    ldy #Entity::_pixel_x ; Point to _pixel_x (lo bit) so we can update it
+    sta (active_entity), y ; Copy _x to _pixel_x (lo bit)
+
+    ldy #Entity::_x+1 ; Point to _x hi bit
+    lda (active_entity), y ; Get the _x (hi bit)
     ldy #Entity::_pixel_x+1 ; Point to _pixel_x (hi bit) so we can update it
     sta (active_entity), y ; Copy _x to _pixel_x (hi bit)
+
     ldx #0
 @shift_x:
     ; The ship+Entity::_x/y is a larger number (shifted up 5 bits) to simulate a fractional number
