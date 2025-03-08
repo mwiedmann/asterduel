@@ -249,13 +249,24 @@ ghost_sprite:
     sta (active_entity), y
     ldy #Entity::_sprite_num
     lda (active_entity), y
-    ldy flip_lane
-    cpy #1
-    beq @no_sprite_inc
+    ldy sp_entity_count
+    cpy #2
+    bcs @non_ship
+    ; ship
     inc
 @no_sprite_inc:
     sta param1
     jsr update_sprite
+    bra @sprite_done
+@non_ship:
+    ldy flip_lane
+    cpy #1
+    beq @no_sprite_inc
+    sta param1
+    ; Just copy the other sprite
+    jsr copy_sprite_set_pos
+    bra @sprite_done
+@sprite_done:
     lda #1 ; back to visible
     ldy #Entity::_visible
     sta (active_entity), y

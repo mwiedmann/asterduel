@@ -280,6 +280,67 @@ update_sprite:
     sta VERA_DATA0
     rts
 
+sprite_temp: .res 8
+
+copy_sprite_set_pos:
+    lda param1
+    sta pts_sprite_num
+    jsr point_to_sprite
+    lda VERA_DATA0
+    sta sprite_temp
+    lda VERA_DATA0
+    sta sprite_temp+1
+    lda VERA_DATA0
+    sta sprite_temp+2
+    lda VERA_DATA0
+    sta sprite_temp+3
+    lda VERA_DATA0
+    sta sprite_temp+4
+    lda VERA_DATA0
+    sta sprite_temp+5
+    lda VERA_DATA0
+    sta sprite_temp+6
+    lda VERA_DATA0
+    sta sprite_temp+7
+    lda param1
+    inc
+    sta pts_sprite_num
+    jsr point_to_sprite
+    lda sprite_temp
+    sta VERA_DATA0
+    lda sprite_temp+1
+    sta VERA_DATA0
+    ldy #Entity::_pixel_show_x
+    lda (active_entity), y
+    sta VERA_DATA0
+    ldy #Entity::_pixel_show_x+1
+    lda (active_entity), y
+    sta VERA_DATA0
+    ldy #Entity::_pixel_show_y
+    lda (active_entity), y
+    sta VERA_DATA0
+    ldy #Entity::_pixel_show_y+1
+    lda (active_entity), y
+    sta VERA_DATA0
+    ; Check if entity visible in this lane
+    ldy #Entity::_visible
+    lda (active_entity), y
+    cmp #0
+    beq @hidden
+    bra @visible
+@hidden:
+    lda sprite_temp+6
+    and #%11110011 ; Hide entity, z-depth=0
+    bra @lastbyte
+@visible:
+    lda sprite_temp+6
+    ora #%00001000
+@lastbyte:
+    sta VERA_DATA0
+    lda sprite_temp+7
+    sta VERA_DATA0
+    rts
+
 ; param1 = visible
 reset_active_entity:
     lda #<((SHIP_MID)<<5)
