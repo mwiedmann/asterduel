@@ -74,8 +74,8 @@ next_astbig:
     lda #>(120<<5)
     ldy #Entity::_y+1
     sta (active_entity), y
-    ;lda astbig_start_ang, x
-    lda #3
+    lda astbig_start_ang, x
+    ;lda #3
     ldy #Entity::_ang
     clc
     adc ang_adj
