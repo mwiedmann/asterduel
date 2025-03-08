@@ -21,7 +21,7 @@
 entities:
 ship_1: .res .sizeof(Entity)
 ship_2: .res .sizeof(Entity)
-; other_entities: .res .sizeof(Entity)*(ENTITY_COUNT-2)
+other_entities: .res .sizeof(Entity)*(ENTITY_COUNT-2)
 
 ; Precalculated sin/cos (adjusted for a pixel velocity I want) for each angle
 ship_vel_ang_x: .word 0,       3,       6,       7,       8, 7, 6, 3, 0, 65535-3, 65535-6, 65535-7, 65535-8, 65535-7, 65535-6, 65535-3
@@ -64,6 +64,7 @@ zsmreserved: .res 256
 .include "sprites.s"
 .include "entities.s"
 .include "controls.s"
+.include "astbig.s"
 
 start:
     ;jsr show_title
@@ -74,6 +75,7 @@ start:
     jsr irq_config
     jsr config
     jsr create_ships
+    jsr create_astbig_sprites
 @waiting:
     lda waitflag
     cmp #0

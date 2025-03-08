@@ -18,7 +18,7 @@ process_entities:
     sta sp_offset+1
     inc sp_entity_count
     lda sp_entity_count
-    cmp #2
+    cmp #2;ENTITY_COUNT
     bne @next_entity
     ldx accelwait
     cpx #ENTITY_ACCEL_TICKS
@@ -89,7 +89,6 @@ process_entity:
     lda (active_entity), y
     sta param1
     jsr update_sprite
-    ;jsr ghost_sprite
 @skip_entity:
     ; See if enemy firing should reset
     ;lda enemywait
@@ -112,6 +111,17 @@ show_ghosts:
     stx sp_offset
     stx sp_offset+1
 @next_entity:
+    lda sp_entity_count
+    cmp #2
+    bcs @double_ghost
+    bra @ghost_done
+@double_ghost:
+    lda #1
+    sta flip_lane
+    jsr ghost_sprite
+@ghost_done:
+    lda #0
+    sta flip_lane
     jsr ghost_sprite
     clc
     lda sp_offset
@@ -122,7 +132,7 @@ show_ghosts:
     sta sp_offset+1
     inc sp_entity_count
     lda sp_entity_count
-    cmp #2
+    cmp #ENTITY_COUNT
     bne @next_entity
     ldx accelwait
     cpx #ENTITY_ACCEL_TICKS
@@ -131,6 +141,8 @@ show_ghosts:
     sta accelwait
 @done:
     rts
+
+flip_lane: .byte 0
 
 ghost_sprite:
     clc
@@ -142,6 +154,11 @@ ghost_sprite:
     sta active_entity+1
     ldy #Entity::_lane
     lda (active_entity), y
+    ldy flip_lane
+    cpy #0
+    beq @no_flip_lane
+    eor #1
+@no_flip_lane:
     cmp #1
     beq @ghost_lane_1
 @ghost_lane_0:
@@ -227,7 +244,11 @@ ghost_sprite:
     sta (active_entity), y
     ldy #Entity::_sprite_num
     lda (active_entity), y
+    ldy flip_lane
+    cpy #1
+    beq @no_sprite_inc
     inc
+@no_sprite_inc:
     sta param1
     jsr update_sprite
     lda #1 ; back to visible
