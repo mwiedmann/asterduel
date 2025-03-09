@@ -65,6 +65,7 @@ zsmreserved: .res 256
 .include "entities.s"
 .include "controls.s"
 .include "astbig.s"
+.include "laser.s"
 
 start:
     ;jsr show_title

@@ -31,6 +31,7 @@ irq_routine:
 @vsync:
     lda #1
     sta waitflag ; Signal that its ok to draw now
+    inc accelwait
     bra @continue
 @top:
     lda #0

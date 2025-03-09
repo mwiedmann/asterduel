@@ -47,7 +47,7 @@ process_entity:
     lda (active_entity), y
     cmp #0
     beq @skip_accel
-    ;jsr accel_entity
+    jsr accel_entity
 @skip_accel:
     ldy #Entity::_destroy_ticks ; See if entity is destroyed after some time
     lda (active_entity), y
@@ -59,6 +59,9 @@ process_entity:
     bne @skip_destroy
     ldy #Entity::_visible
     sta (active_entity), y
+    ldy #Entity::_active
+    sta (active_entity), y
+    bra @skip_scroll
 @skip_destroy:
     jsr move_entity
     lda sp_entity_count
@@ -139,11 +142,6 @@ show_ghosts:
     lda sp_entity_count
     cmp #ENTITY_COUNT
     bne @next_entity
-    ldx accelwait
-    cpx #ENTITY_ACCEL_TICKS
-    bne @done
-    lda #0
-    sta accelwait
 @done:
     rts
 
