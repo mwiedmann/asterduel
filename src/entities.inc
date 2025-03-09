@@ -40,6 +40,7 @@ SAFE_TYPE =  9
     _coll_adj .byte
     _lane .byte
     _is_scroll_focus .byte
+    _active .byte
 .endstruct
 
 .endif

@@ -99,6 +99,8 @@ next_astbig:
     lda #1
     ldy #Entity::_ob_behavior
     sta (active_entity), y
+    ldy #Entity::_active
+    sta (active_entity), y
     lda #32
     ldy #Entity::_size
     sta (active_entity), y

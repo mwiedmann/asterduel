@@ -36,7 +36,7 @@ process_entity:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
-    ldy #Entity::_visible
+    ldy #Entity::_active
     lda (active_entity), y
     cmp #0
     beq @skip_entity ; Skip if not visible
@@ -157,6 +157,12 @@ ghost_sprite:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
+    ldy #Entity::_active
+    lda (active_entity), y
+    cmp #1
+    beq @continue_ghost ; Skip if not visible
+    rts
+@continue_ghost:
     ldy #Entity::_lane
     lda (active_entity), y
     ldy flip_lane
