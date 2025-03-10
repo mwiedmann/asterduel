@@ -28,6 +28,20 @@ process_entities:
 @done:
     rts
 
+inactivate_entity:
+    lda #0
+    ldy #Entity::_visible
+    sta (active_entity), y
+    ldy #Entity::_active
+    sta (active_entity), y
+    ldy #Entity::_sprite_num
+    lda (active_entity), y
+    sta param1
+    jsr update_sprite
+    inc param1
+    jsr update_sprite
+    rts
+
 process_entity:
     clc
     lda #<entities
@@ -57,11 +71,8 @@ process_entity:
     sta (active_entity), y
     cmp #0
     bne @skip_destroy
-    ldy #Entity::_visible
-    sta (active_entity), y
-    ldy #Entity::_active
-    sta (active_entity), y
-    bra @skip_scroll
+    jsr inactivate_entity
+    rts
 @skip_destroy:
     jsr move_entity
     lda sp_entity_count
