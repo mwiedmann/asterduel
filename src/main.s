@@ -66,6 +66,7 @@ zsmreserved: .res 256
 .include "controls.s"
 .include "astbig.s"
 .include "laser.s"
+.include "collisions.s"
 
 start:
     ;jsr show_title
@@ -85,6 +86,7 @@ start:
     jsr check_controls
     jsr process_entities
     jsr show_ghosts
+    jsr handle_collision
     lda #0
     sta waitflag
     bra @waiting

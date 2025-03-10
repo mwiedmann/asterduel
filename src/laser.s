@@ -1,6 +1,93 @@
 .ifndef LASER_S
 LASER_S = 1
 
+
+create_laser_sprites:
+    ldx #0
+    stx sp_entity_count
+    ldx #SHIP_1_LASER_SPRITE_NUM_START
+    stx sp_num
+    ldx #<(.sizeof(Entity)*SHIP_1_LASER_ENTITY_NUM_START)
+    stx sp_offset
+    ldx #>(.sizeof(Entity)*SHIP_1_LASER_ENTITY_NUM_START)
+    stx sp_offset+1
+@next_laser:
+    clc
+    lda #<entities
+    adc sp_offset
+    sta active_entity
+    lda #>entities
+    adc sp_offset+1
+    sta active_entity+1
+    lda #0
+    sta param1
+    jsr reset_active_entity
+    lda #<SHIP_1_LASER_LOAD_ADDR ; Img addr
+    ldy #Entity::_image_addr
+    sta (active_entity), y
+    lda #>SHIP_1_LASER_LOAD_ADDR ; Img addr
+    ldy #Entity::_image_addr+1
+    sta (active_entity), y
+    lda #<(SHIP_1_LASER_LOAD_ADDR>>16) ; Img addr
+    ldy #Entity::_image_addr+2
+    sta (active_entity), y
+    jsr set_laser_attr
+    lda sp_num
+    ldy #Entity::_sprite_num
+    sta (active_entity), y
+    sta cs_sprite_num ; pass the sprite_num for the enemy and create its sprite
+    lda #%01010000
+    sta cs_size ; 16x16
+    jsr create_sprite
+    inc cs_sprite_num
+    jsr create_sprite
+    lda sp_offset
+    adc #.sizeof(Entity)
+    sta sp_offset
+    lda sp_offset+1
+    adc #0
+    sta sp_offset+1
+    inc sp_num
+    inc sp_num ; 2 because of ghost sprites
+    inc sp_entity_count
+    lda sp_entity_count
+    cmp #SHIP_1_LASER_COUNT
+    bne @next_laser
+    rts
+
+set_laser_attr:
+    lda #0
+    ldy #Entity::_visible
+    sta (active_entity), y
+    ldy #Entity::_active
+    sta (active_entity), y
+    lda #LASER_TYPE
+    ldy #Entity::_type
+    sta (active_entity), y
+    lda #16
+    ldy #Entity::_size
+    sta (active_entity), y
+    lda #12
+    ldy #Entity::_coll_size
+    sta (active_entity), y
+    lda #2
+    ldy #Entity::_coll_adj
+    sta (active_entity), y
+    lda #%00110110
+    ldy #Entity::_collision_matrix
+    sta (active_entity), y
+    lda #%01000000
+    ldy #Entity::_collision_id
+    sta (active_entity), y
+    lda #1
+    ldy #Entity::_has_accel
+    sta (active_entity), y
+    ldy #Entity::_has_ang
+    sta (active_entity), y
+    ldy #Entity::_ob_behavior
+    sta (active_entity), y ; Laser wraps around screen
+    rts
+
 fire_laser:
     ldx #0
     stx sp_entity_count
