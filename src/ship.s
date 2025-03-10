@@ -46,11 +46,14 @@ create_ship_2:
     ldy #Entity::_sprite_num
     sta (active_entity), y
     jsr create_ship
-    lda #4
+    lda #12
     ldy #Entity::_ang
     sta (active_entity), y
-    lda #32
+    lda #<(-32)
     ldy #Entity::_vel_x
+    sta (active_entity), y
+    lda #>(-32)
+    ldy #Entity::_vel_x+1
     sta (active_entity), y
     ; pass the sprite_num for the ship and create its sprite
     lda #SHIP_2_SPRITE_NUM

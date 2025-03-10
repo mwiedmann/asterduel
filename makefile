@@ -54,6 +54,9 @@ stars:
 field:
 	node tools/starfield.js
 
+overlay:
+	node tools/overlay.js
+
 zip:
 	cd build && \
 	rm -f aduel.zip && \

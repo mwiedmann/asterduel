@@ -9,7 +9,7 @@ const solidTile=5
 for(let y=0; y<32; y++){
     for(let x=0; x<128; x++){
         // Solid tile on edges
-        if (x===0 || x===127 || y===0 || y===14) {
+        if (x===0 || x===127 /*|| y===0 || y===14*/) {
             stars.push(solidTile)
             continue
         }
@@ -39,13 +39,15 @@ for(let y=0; y<32; y++){
             data.push(stars[c], 50)
         } else if(x===127) {
             data.push(stars[c], 100)
-        } else if (y===0) {
-            data.push(stars[c], 150)
-        } else if(y===14) {
-            data.push(stars[c], 180)
         } else {
             data.push(stars[c],c===0 ? 0 : color)
         }
+        
+        // if (y===0) {
+        //     data.push(stars[c], 150)
+        // } else if(y===14) {
+        //     data.push(stars[c], 180)
+        // } 
 
         c++
     }
