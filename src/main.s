@@ -14,6 +14,7 @@
 .include "x16.inc"
 .include "config.inc"
 .include "entities.inc"
+.include "oneshot.inc"
 .include "zsmkit.inc"
 
 .segment "CODE"
@@ -22,6 +23,8 @@ entities:
 ship_1: .res .sizeof(Entity)
 ship_2: .res .sizeof(Entity)
 other_entities: .res .sizeof(Entity)*(ENTITY_COUNT-2)
+
+oneshots: .res .sizeof(Oneshot) * ONESHOT_SPRITE_COUNT
 
 ; Precalculated sin/cos (adjusted for a pixel velocity I want) for each angle
 ship_vel_ang_x: .word 0,       3,       6,       7,       8, 7, 6, 3, 0, 65535-3, 65535-6, 65535-7, 65535-8, 65535-7, 65535-6, 65535-3
@@ -67,6 +70,7 @@ zsmreserved: .res 256
 .include "astbig.s"
 .include "laser.s"
 .include "collisions.s"
+.include "oneshot.s"
 
 start:
     ;jsr show_title
@@ -78,6 +82,7 @@ start:
     jsr config
     jsr create_ships
     jsr create_astbig_sprites
+    jsr init_oneshots
     jsr launch_astbigs
 @waiting:
     lda waitflag
@@ -85,6 +90,7 @@ start:
     beq @waiting
     jsr check_controls
     jsr process_entities
+    jsr update_oneshots
     jsr show_ghosts
     jsr handle_collision
     lda #0

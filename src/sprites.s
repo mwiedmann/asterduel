@@ -140,7 +140,7 @@ update_sprite:
     clc
     adc #1
     sta (active_entity), y
-    cmp #6 ; Rotate every this many ticks
+    cmp #60 ; Rotate every this many ticks
     bne @skip_update_ang_frame
     lda #0
     sta (active_entity), y ; Set ticks back to 0

@@ -514,22 +514,22 @@ collision_laser:
 ;     jsr destroy_2
 ;     rts
 
-; create_explosion_active_entity:
-;     ldy #Entity::_pixel_x
-;     lda (active_entity), y
-;     sta os_x
-;     ldy #Entity::_pixel_x+1
-;     lda (active_entity), y
-;     sta os_x+1
-;     ldy #Entity::_pixel_y
-;     lda (active_entity), y
-;     sta os_y
-;     ldy #Entity::_pixel_y+1
-;     lda (active_entity), y
-;     sta os_y+1
-;     jsr create_explosion
-;     jsr sound_explode
-;     rts
+create_explosion_active_entity:
+    ldy #Entity::_pixel_x
+    lda (active_entity), y
+    sta os_x
+    ldy #Entity::_pixel_x+1
+    lda (active_entity), y
+    sta os_x+1
+    ldy #Entity::_pixel_y
+    lda (active_entity), y
+    sta os_y
+    ldy #Entity::_pixel_y+1
+    lda (active_entity), y
+    sta os_y+1
+    jsr create_explosion
+    ;jsr sound_explode
+    rts
 
 ; create_explosion_2:
 ;     ldy #Entity::_pixel_x
@@ -592,7 +592,7 @@ destroy_both:
     lda comp_entity2+1
     sta active_entity+1
     jsr inactivate_entity
-    ;jsr create_explosion_active_entity
+    jsr create_explosion_active_entity
     rts
 
 ; destroy_ship:

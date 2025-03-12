@@ -8,6 +8,7 @@ ship_thrust_filename: .asciiz "shipthr.bin"
 astbig_filename: .asciiz "astbig.bin"
 laser_filename: .asciiz "laser.bin"
 overlay_filename: .asciiz "overlay.bin"
+exp_filename: .asciiz "exp.bin"
 
 load_sprites:
     jsr load_star_tiles
@@ -17,6 +18,7 @@ load_sprites:
     jsr load_ship_thust
     jsr load_astbig
     jsr load_laser
+    jsr load_exp
     rts
 
 load_star_tiles:
@@ -128,6 +130,22 @@ load_laser:
     lda #2 ; VRAM 1st bank
     ldx #<SHIP_1_LASER_LOAD_ADDR 
     ldy #>SHIP_1_LASER_LOAD_ADDR
+    jsr LOAD
+    rts
+
+load_exp:
+    lda #7
+    ldx #<exp_filename
+    ldy #>exp_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #2 ; VRAM 1st bank
+    ldx #<EXPLOSION_LOAD_ADDR 
+    ldy #>EXPLOSION_LOAD_ADDR
     jsr LOAD
     rts
 
