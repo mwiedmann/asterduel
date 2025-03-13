@@ -315,8 +315,8 @@ collision_ship:
     ; beq @ship_enemy_laser
     ; cmp #MINE_TYPE
     ; beq @ship_mine
-    ; cmp #ASTSML_TYPE
-    ; beq @ship_astsml
+    cmp #ASTSML_TYPE
+    beq @ship_astsml
     cmp #ASTBIG_TYPE
     beq @ship_astbig
     ; cmp #GEM_TYPE
@@ -340,11 +340,11 @@ collision_ship:
 ;     jsr destroy_2
 ;     dec current_mine_count
 ;     rts
-; @ship_astsml:
-;     ; Destroy both
-;     jsr destroy_ship
-;     jsr destroy_2
-;     rts
+@ship_astsml:
+    ; Destroy both
+    ;jsr destroy_ship
+    jsr destroy_2
+    rts
 @ship_astbig:
     ; Destroy both
     ; jsr destroy_ship
@@ -393,8 +393,8 @@ collision_laser:
     ; beq @laser_enemy
     ; cmp #MINE_TYPE
     ; beq @laser_mine
-    ; cmp #ASTSML_TYPE
-    ; beq @laser_astsml
+    cmp #ASTSML_TYPE
+    beq @laser_astsml
     cmp #ASTBIG_TYPE
     beq @laser_astbig
     ; cmp #GEM_TYPE
@@ -407,13 +407,12 @@ collision_laser:
 ;     jsr destroy_both
 ;     dec current_mine_count
 ;     rts
-; @laser_astsml:
-;     jsr destroy_both
-;     rts
-@laser_astbig:
-;     jsr destroy_1
-;     jsr split_2
+@laser_astsml:
     jsr destroy_both
+    rts
+@laser_astbig:
+    jsr destroy_1
+    jsr split_2
     rts
 ; @laser_gem:
 ;     ; Destroy both
@@ -565,13 +564,13 @@ create_explosion_active_entity:
 ;     jsr create_score
 ;     rts
 
-; destroy_1:
-;     lda comp_entity1
-;     sta active_entity
-;     lda comp_entity1+1
-;     sta active_entity+1
-;     jsr destroy_active_entity
-;     rts
+destroy_1:
+    lda comp_entity1
+    sta active_entity
+    lda comp_entity1+1
+    sta active_entity+1
+    jsr inactivate_entity
+    rts
 
 destroy_2:
     lda comp_entity2
@@ -622,96 +621,96 @@ destroy_both:
 ;     sta ship_dead
 ;     rts
 
-; split_index_1: .byte 1
-; split_index_2: .byte 6
-; split_index_3: .byte 11
-; split_index_4: .byte 13
+split_index_1: .byte 1
+split_index_2: .byte 6
+split_index_3: .byte 11
+split_index_4: .byte 13
 
-; split_1:
-;     lda comp_entity1
-;     sta active_entity
-;     lda comp_entity1+1
-;     sta active_entity+1
-;     jsr split_active_entity
-;     rts
+split_1:
+    lda comp_entity1
+    sta active_entity
+    lda comp_entity1+1
+    sta active_entity+1
+    jsr split_active_entity
+    rts
 
-; split_2:
-;     lda comp_entity2
-;     sta active_entity
-;     lda comp_entity2+1
-;     sta active_entity+1
-;     jsr split_active_entity
-;     rts
+split_2:
+    lda comp_entity2
+    sta active_entity
+    lda comp_entity2+1
+    sta active_entity+1
+    jsr split_active_entity
+    rts
 
-; split_active_entity:
-;     jsr create_explosion_active_entity
-;     jsr destroy_active_entity
-;     lda active_entity
-;     sta hold
-;     lda active_entity+1
-;     sta hold+1
-;     jsr drop_gem_from_active_entity
-;     lda hold
-;     sta active_entity
-;     lda hold+1
-;     sta active_entity+1
-;     ldy #Entity::_x
-;     lda (active_entity), y
-;     sta astsml_x
-;     ldy #Entity::_x+1
-;     lda (active_entity), y
-;     clc
-;     adc #>(8<<5)
-;     sta astsml_x+1
-;     ldy #Entity::_y
-;     lda (active_entity), y
-;     sta astsml_y
-;     ldy #Entity::_y+1
-;     lda (active_entity), y
-;     clc
-;     adc #>(8<<5)
-;     sta astsml_y+1
-;     ; All asteroids need to fly in slightly different directions
-;     lda split_index_1
-;     sta astsml_ang_index
-;     inc; stays between 0-4
-;     cmp #5
-;     bne @no_wrap_1
-;     lda #0
-; @no_wrap_1:
-;     sta split_index_1
-;     jsr launch_astsml
-;     ; 2nd astsml, active_entity now the astsml that was just launched
-;     lda split_index_2
-;     sta astsml_ang_index
-;     inc; stays between 5-7
-;     cmp #8
-;     bne @no_wrap_2
-;     lda #5
-; @no_wrap_2:
-;     sta split_index_2
-;     jsr launch_astsml
-;     ; 3rd astsml, active_entity now the astsml that was just launched
-;     lda split_index_3
-;     sta astsml_ang_index
-;     inc; stays between 8-12
-;     cmp #13
-;     bne @no_wrap_3
-;     lda #8
-; @no_wrap_3:
-;     sta split_index_3
-;     jsr launch_astsml
-;     ; 4th astsml, active_entity now the astsml that was just launched
-;     lda split_index_4
-;     sta astsml_ang_index
-;     inc; stays between 13-15
-;     cmp #16
-;     bne @no_wrap_4
-;     lda #13
-; @no_wrap_4:
-;     sta split_index_4
-;     jsr launch_astsml
-;     rts
+split_active_entity:
+    jsr create_explosion_active_entity
+    jsr inactivate_entity
+    lda active_entity
+    sta hold
+    lda active_entity+1
+    sta hold+1
+    ;jsr drop_gem_from_active_entity
+    lda hold
+    sta active_entity
+    lda hold+1
+    sta active_entity+1
+    ldy #Entity::_x
+    lda (active_entity), y
+    sta astsml_x
+    ldy #Entity::_x+1
+    lda (active_entity), y
+    clc
+    adc #>(8<<5)
+    sta astsml_x+1
+    ldy #Entity::_y
+    lda (active_entity), y
+    sta astsml_y
+    ldy #Entity::_y+1
+    lda (active_entity), y
+    clc
+    adc #>(8<<5)
+    sta astsml_y+1
+    ; All asteroids need to fly in slightly different directions
+    lda split_index_1
+    sta astsml_ang_index
+    inc; stays between 0-4
+    cmp #5
+    bne @no_wrap_1
+    lda #0
+@no_wrap_1:
+    sta split_index_1
+    jsr launch_astsml
+    ; 2nd astsml, active_entity now the astsml that was just launched
+    lda split_index_2
+    sta astsml_ang_index
+    inc; stays between 5-7
+    cmp #8
+    bne @no_wrap_2
+    lda #5
+@no_wrap_2:
+    sta split_index_2
+    jsr launch_astsml
+    ; 3rd astsml, active_entity now the astsml that was just launched
+    lda split_index_3
+    sta astsml_ang_index
+    inc; stays between 8-12
+    cmp #13
+    bne @no_wrap_3
+    lda #8
+@no_wrap_3:
+    sta split_index_3
+    jsr launch_astsml
+    ; 4th astsml, active_entity now the astsml that was just launched
+    lda split_index_4
+    sta astsml_ang_index
+    inc; stays between 13-15
+    cmp #16
+    bne @no_wrap_4
+    lda #13
+@no_wrap_4:
+    sta split_index_4
+    jsr launch_astsml
+    rts
 
 
 ; destroy_active_entity:

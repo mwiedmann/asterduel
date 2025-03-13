@@ -68,6 +68,7 @@ zsmreserved: .res 256
 .include "entities.s"
 .include "controls.s"
 .include "astbig.s"
+.include "astsml.s"
 .include "laser.s"
 .include "collisions.s"
 .include "oneshot.s"
@@ -82,6 +83,7 @@ start:
     jsr config
     jsr create_ships
     jsr create_astbig_sprites
+    jsr create_astsml_sprites
     jsr init_oneshots
     jsr launch_astbigs
 @waiting:

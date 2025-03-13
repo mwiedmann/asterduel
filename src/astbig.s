@@ -99,8 +99,6 @@ next_astbig:
     lda #1
     ldy #Entity::_ob_behavior
     sta (active_entity), y
-    ldy #Entity::_active
-    sta (active_entity), y
     lda #32
     ldy #Entity::_size
     sta (active_entity), y
@@ -127,7 +125,7 @@ next_astbig:
     sta cs_size ; 32x32
     jsr create_sprite
     inc cs_sprite_num
-    jsr create_sprite
+    jsr create_sprite ; create 2nd sprite
     lda sp_offset
     adc #.sizeof(Entity)
     sta sp_offset
@@ -179,13 +177,15 @@ launch_astbig:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
-    ldy #Entity::_visible
+    ldy #Entity::_active
     lda (active_entity), y
-    cmp #0
-    bne @skip_entity
+    cmp #1
+    beq @skip_entity
     ; Found a free astbig
     lda #1
     ldy #Entity::_visible
+    sta (active_entity), y
+    ldy #Entity::_active
     sta (active_entity), y
     ldx launch_big_accel_index ; Accelerate the astbig a few times to get it started moving
     lda astbig_accel, x
