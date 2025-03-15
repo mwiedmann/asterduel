@@ -61,6 +61,8 @@ set_laser_attr:
     sta (active_entity), y
     ldy #Entity::_active
     sta (active_entity), y
+    ldy #Entity::_death_count
+    sta (active_entity), y
     lda #LASER_TYPE
     ldy #Entity::_type
     sta (active_entity), y

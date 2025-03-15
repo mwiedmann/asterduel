@@ -343,18 +343,6 @@ copy_sprite_set_pos:
 
 ; param1 = visible
 reset_active_entity:
-    lda #<((SHIP_MID)<<5)
-    ldy #Entity::_x
-    sta (active_entity), y
-    lda #>((SHIP_MID)<<5)
-    ldy #Entity::_x+1
-    sta (active_entity), y
-    lda #<((120-16)<<5)
-    ldy #Entity::_y
-    sta (active_entity), y
-    lda #>((120-16)<<5)
-    ldy #Entity::_y+1
-    sta (active_entity), y
     lda #0
     ldy #Entity::_vel_x
     sta (active_entity), y

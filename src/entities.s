@@ -50,6 +50,13 @@ process_entity:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
+    ; see if entity needs to respawn
+    ldy #Entity::_death_count
+    lda (active_entity), y
+    cmp #0
+    beq @check_active
+    jsr check_ship_death
+@check_active:
     ldy #Entity::_active
     lda (active_entity), y
     cmp #0

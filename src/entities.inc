@@ -41,6 +41,7 @@ SAFE_TYPE =  9
     _lane .byte
     _is_scroll_focus .byte
     _active .byte
+    _death_count .byte
 .endstruct
 
 .endif

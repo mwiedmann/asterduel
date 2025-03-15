@@ -79,6 +79,8 @@ next_astsml:
     lda #0
     ldy #Entity::_has_accel
     sta (active_entity), y
+    ldy #Entity::_death_count
+    sta (active_entity), y
     lda sp_num
     ldy #Entity::_sprite_num
     sta (active_entity), y ; Set enemy sprite num

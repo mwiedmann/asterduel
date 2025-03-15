@@ -6,11 +6,39 @@ create_ships:
     jsr create_ship_2
     rts
 
+check_ship_death:
+    dec
+    sta (active_entity), y
+    cmp #0
+    beq @respawn_ship
+    rts
+@respawn_ship:
+    lda sp_entity_count
+    cmp #0
+    bne @respawn_ship_2
+    jsr create_ship_1
+    rts
+@respawn_ship_2:
+    jsr create_ship_2
+    rts
+
 create_ship_1:
     jsr set_ship_1_as_active
     lda #1 ; visible for test
     sta param1 ; ship should not be visible to start
     jsr reset_active_entity
+    lda #<(SHIP_1_X_START<<5)
+    ldy #Entity::_x
+    sta (active_entity), y
+    lda #>(SHIP_1_X_START<<5)
+    ldy #Entity::_x+1
+    sta (active_entity), y
+    lda #<((120-16)<<5)
+    ldy #Entity::_y
+    sta (active_entity), y
+    lda #>((120-16)<<5)
+    ldy #Entity::_y+1
+    sta (active_entity), y
     ; Top lane for ship_1
     lda #0
     ldy #Entity::_lane
@@ -41,6 +69,18 @@ create_ship_2:
     lda #1 ; visible for test
     sta param1 ; ship should not be visible to start
     jsr reset_active_entity
+    lda #<(SHIP_2_X_START<<5)
+    ldy #Entity::_x
+    sta (active_entity), y
+    lda #>(SHIP_2_X_START<<5)
+    ldy #Entity::_x+1
+    sta (active_entity), y
+    lda #<((120-16)<<5)
+    ldy #Entity::_y
+    sta (active_entity), y
+    lda #>((120-16)<<5)
+    ldy #Entity::_y+1
+    sta (active_entity), y
     ; Bottom lane for ship_2
     lda #1
     ldy #Entity::_lane
@@ -72,6 +112,9 @@ create_ship_2:
     rts
 
 create_ship:
+    lda #0
+    ldy #Entity::_death_count
+    sta (active_entity), y
     lda #1
     ldy #Entity::_is_scroll_focus
     sta (active_entity), y

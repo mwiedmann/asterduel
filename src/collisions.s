@@ -234,7 +234,7 @@ last_inner_entity:
     ; Reached last entity
     inc hc_outer_entity_count ; Update the outer index
     lda hc_outer_entity_count 
-    cmp #ENTITY_COUNT
+    cmp #OUTER_ENTITY_COUNT
     beq @done ; Reached end of list...stop
     inc ; Inc and store as the starting inner index
     sta hc_inner_entity_count 
@@ -342,14 +342,14 @@ collision_ship:
 ;     rts
 @ship_astsml:
     ; Destroy both
-    ;jsr destroy_ship
+    jsr destroy_ship
     jsr destroy_2
+    jsr create_explosion_active_entity
     rts
 @ship_astbig:
     ; Destroy both
-    ; jsr destroy_ship
-    ; jsr split_2
-    jsr destroy_2
+    jsr destroy_ship
+    jsr split_2
     rts
 ; @ship_gem:
 ;     ; Ship gets gem and points
@@ -563,6 +563,32 @@ create_explosion_active_entity:
 ;     ; os_frame must already be set
 ;     jsr create_score
 ;     rts
+
+destroy_ship:
+    lda hc_outer_entity_count
+    cmp #0
+    bne @ship_2
+    jsr destroy_ship_1
+    rts
+@ship_2:
+    jsr destroy_ship_2
+    rts
+
+destroy_ship_1:
+    jsr set_ship_1_as_active
+    ldy #Entity::_death_count
+    lda #SHIP_RESPAWN_COUNT
+    sta (active_entity), y
+    jsr inactivate_entity
+    rts
+
+destroy_ship_2:
+    jsr set_ship_2_as_active
+    ldy #Entity::_death_count
+    lda #SHIP_RESPAWN_COUNT
+    sta (active_entity), y
+    jsr inactivate_entity
+    rts
 
 destroy_1:
     lda comp_entity1
