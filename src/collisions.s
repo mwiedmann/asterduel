@@ -622,9 +622,9 @@ destroy_both:
 ;     rts
 
 split_index_1: .byte 1
-split_index_2: .byte 6
-split_index_3: .byte 11
-split_index_4: .byte 13
+split_index_2: .byte 11
+; split_index_3: .byte 11
+; split_index_4: .byte 13
 
 split_1:
     lda comp_entity1
@@ -673,43 +673,43 @@ split_active_entity:
     ; All asteroids need to fly in slightly different directions
     lda split_index_1
     sta astsml_ang_index
-    inc; stays between 0-4
-    cmp #5
+    inc; stays between 1-7
+    cmp #8
     bne @no_wrap_1
-    lda #0
+    lda #1
 @no_wrap_1:
     sta split_index_1
     jsr launch_astsml
     ; 2nd astsml, active_entity now the astsml that was just launched
     lda split_index_2
     sta astsml_ang_index
-    inc; stays between 5-7
-    cmp #8
+    inc; stays between 9-15
+    cmp #16
     bne @no_wrap_2
-    lda #5
+    lda #9
 @no_wrap_2:
     sta split_index_2
     jsr launch_astsml
-    ; 3rd astsml, active_entity now the astsml that was just launched
-    lda split_index_3
-    sta astsml_ang_index
-    inc; stays between 8-12
-    cmp #13
-    bne @no_wrap_3
-    lda #8
-@no_wrap_3:
-    sta split_index_3
-    jsr launch_astsml
-    ; 4th astsml, active_entity now the astsml that was just launched
-    lda split_index_4
-    sta astsml_ang_index
-    inc; stays between 13-15
-    cmp #16
-    bne @no_wrap_4
-    lda #13
-@no_wrap_4:
-    sta split_index_4
-    jsr launch_astsml
+;     ; 3rd astsml, active_entity now the astsml that was just launched
+;     lda split_index_3
+;     sta astsml_ang_index
+;     inc; stays between 8-12
+;     cmp #13
+;     bne @no_wrap_3
+;     lda #8
+; @no_wrap_3:
+;     sta split_index_3
+;     jsr launch_astsml
+;     ; 4th astsml, active_entity now the astsml that was just launched
+;     lda split_index_4
+;     sta astsml_ang_index
+;     inc; stays between 13-15
+;     cmp #16
+;     bne @no_wrap_4
+;     lda #13
+; @no_wrap_4:
+;     sta split_index_4
+;     jsr launch_astsml
     rts
 
 

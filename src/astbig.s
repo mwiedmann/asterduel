@@ -1,31 +1,9 @@
 .ifndef ASTBIG_S
 ASTBIG_S = 1
 
-; across 0<<5, 64<<5, 128<<5, 192<<5, 256<<5, 320<<5, 384<<5, 448<<5, 512<<5, 576<<5
-; down 0<<5, 69<<5, 138<<5, 207<<5, 276<<5, 345<<5, 414<<5
-
-; astbig_start_x:         .word 0<<5,   64<<5,  128<<5, 192<<5, 256<<5, 320<<5, 384<<5, 448<<5, 512<<5, 576<<5 ; top row
-; astbig_start_x_sides:   .word 0<<5,   576<<5, 0<<5,   576<<5, 0<<5,   576<<5, 0<<5,   576<<5, 0<<5,   576<<5 ; sides
-; astbig_start_x_bot:     .word 0<<5,   64<<5,  128<<5, 192<<5, 256<<5, 320<<5, 384<<5, 448<<5, 512<<5, 576<<5 ; bottom row
-
-; astbig_start_y:         .word 0<<5,   0<<5,   0<<5,   0<<5,   0<<5,   0<<5,   0<<5,   0<<5,   0<<5,   0<<5   ; top
-; astbig_start_y_sides:   .word 69<<5,  69<<5,  138<<5, 138<<5, 207<<5, 207<<5, 276<<5, 276<<5, 345<<5, 345<<5 ; sides
-; astbig_start_y_bot:     .word 414<<5, 414<<5, 414<<5, 414<<5, 414<<5, 414<<5, 414<<5, 414<<5, 414<<5, 414<<5 ; bottom row
-
-; astbig_start_ang:       .word 8,     10,      7,      9,      6,      7,      9,      8,      7,      10
-; astbig_start_ang_sides: .word 5,     11,      6,      10,     4,      12,     3,      13,     2,      14
-; astbig_start_ang_bot:   .word 1,     0,       15,     14,     2,      1,      15,     0,      15,     14
-
-; astbig_start_x:         .word 0<<5, 192<<5, 384<<5, 576<<5, 0<<5,   0<<5,   576<<5, 576<<5, 0<<5,   192<<5, 384<<5, 576<<5, 128<<5, 0<<5,   576<<5, 320<<5
-; astbig_start_y:         .word 0<<5, 0<<5,   0<<5,   0<<5,   138<<5, 276<<5, 138<<5, 276<<5, 414<<5, 414<<5, 414<<5, 414<<5,  0<<5,  345<<5, 69<<5,  414<<5
-; astbig_start_ang:       .word 6,    9,      9,      10,     5,      6,      12,     13,     1,      2,      13,     14,      11,    2,      10,     15
-
-astbig_start_x:         .word 500<<5, 600<<5, 700<<5, 800<<5, 900<<5, 1000<<5, 1100<<5, 1200<<5
-astbig_start_y:         .word 0<<5, 276<<5, 138<<5, 414<<5, 0<<5,   414<<5, 414<<5, 414<<5, 0<<5,   138<<5, 276<<5, 414<<5, 0<<5,   345<<5, 0<<5,   69<<5 
-astbig_start_ang:       .word 6,    6,      12,     2,      9,      1,      13,     14,     9,      5,      13,     13,     11,     2,      10,     10  
-astbig_accel:           .byte 1,    2,      3,      1,      2,      2,      1,      1,      2,      1,      3,      4,      3,      3,      4,      4
-
-ang_adj: .byte 1
+astbig_start_x:         .word AST_LAUNCH_X_START<<5, (AST_LAUNCH_X_START+AST_LAUNCH_X_ADJ)<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*2))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*3))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*4))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*5))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*6))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*7))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*8))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*9))<<5
+astbig_start_ang:       .word 1, 7, 15, 6, 7, 1, 9, 15, 9, 14
+astbig_accel:           .byte 1, 2, 1,  2, 1, 2, 1, 1,  2, 1
 
 create_astbig_sprites:
     lda #<ASTBIG_LOAD_ADDR
@@ -77,8 +55,6 @@ next_astbig:
     lda astbig_start_ang, x
     ;lda #3
     ldy #Entity::_ang
-    clc
-    adc ang_adj
     sta (active_entity), y
     jsr move_entity ; Update the pixel positions
     lda us_img_addr ; Img addr
