@@ -47,6 +47,12 @@ create_ship_1:
     ldy #Entity::_sprite_num
     sta (active_entity), y
     jsr create_ship
+    lda #%01011100
+    ldy #Entity::_collision_matrix
+    sta (active_entity), y
+    lda #%10000000
+    ldy #Entity::_collision_id
+    sta (active_entity), y
     lda #4
     ldy #Entity::_ang
     sta (active_entity), y
@@ -89,6 +95,12 @@ create_ship_2:
     ldy #Entity::_sprite_num
     sta (active_entity), y
     jsr create_ship
+    lda #%10101100
+    ldy #Entity::_collision_matrix
+    sta (active_entity), y
+    lda #%01000000
+    ldy #Entity::_collision_id
+    sta (active_entity), y
     lda #12
     ldy #Entity::_ang
     sta (active_entity), y
@@ -129,12 +141,6 @@ create_ship:
     sta (active_entity), y
     lda #5
     ldy #Entity::_coll_adj
-    sta (active_entity), y
-    lda #%00111111
-    ldy #Entity::_collision_matrix
-    sta (active_entity), y
-    lda #%10000000
-    ldy #Entity::_collision_id
     sta (active_entity), y
     lda #1 ; Ship active
     ldy #Entity::_visible

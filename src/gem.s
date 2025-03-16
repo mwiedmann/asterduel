@@ -48,7 +48,7 @@ next_gem:
     lda #2
     ldy #Entity::_coll_adj
     sta (active_entity), y
-    lda #%11011000
+    lda #%11000000
     ldy #Entity::_collision_matrix
     sta (active_entity), y
     lda #%00000100

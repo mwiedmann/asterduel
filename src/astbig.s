@@ -84,10 +84,10 @@ next_astbig:
     lda #6
     ldy #Entity::_coll_adj
     sta (active_entity), y
-    lda #%11001000
+    lda #%11110000
     ldy #Entity::_collision_matrix
     sta (active_entity), y
-    lda #%00100000
+    lda #%00001000
     ldy #Entity::_collision_id
     sta (active_entity), y
     lda #0

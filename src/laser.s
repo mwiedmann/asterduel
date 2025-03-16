@@ -75,10 +75,10 @@ set_laser_attr:
     lda #2
     ldy #Entity::_coll_adj
     sta (active_entity), y
-    lda #%00110110
+    lda #%01001000
     ldy #Entity::_collision_matrix
     sta (active_entity), y
-    lda #%01000000
+    lda #%00100000
     ldy #Entity::_collision_id
     sta (active_entity), y
     lda #1
