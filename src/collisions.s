@@ -311,8 +311,8 @@ collision_ship:
     lda (comp_entity2), y
     ; cmp #ENEMY_TYPE
     ; beq @ship_enemy
-    ; cmp #ENEMY_LASER_TYPE
-    ; beq @ship_enemy_laser
+    cmp #LASER_TYPE
+    beq @ship_laser
     ; cmp #MINE_TYPE
     ; beq @ship_mine
     cmp #ASTSML_TYPE
@@ -329,11 +329,12 @@ collision_ship:
 ;     jsr destroy_ship
 ;     jsr destroy_2
 ;     rts
-; @ship_enemy_laser:
-;     ; Both die
-;     jsr destroy_ship
-;     jsr destroy_2
-;     rts
+@ship_laser:
+    ; Both die
+    jsr destroy_ship
+    jsr destroy_2
+    jsr create_explosion_active_entity
+    rts
 ; @ship_mine:
 ;     ; Both die
 ;     jsr destroy_ship

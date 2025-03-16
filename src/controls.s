@@ -105,8 +105,9 @@ check_controls:
 @firing:
     ldx #SHIP_FIRE_TICKS
     stx firewait ; Reset fire ticks
-    jsr fire_laser
-    jsr set_ship_1_as_active
+    jsr fire_laser_1
+    jsr fire_laser_2
+    ;jsr set_ship_1_as_active
 @done:
     rts
 
