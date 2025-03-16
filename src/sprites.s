@@ -120,7 +120,7 @@ update_sprite:
     adc #1
     sta us_frame
     sta (active_entity), y
-    cmp #8 ; Wrap back to 0 at 8
+    cmp #4 ; Wrap back to 0 at 4
     bne @skip_update_ang_frame
     lda #0
     sta (active_entity), y

@@ -675,7 +675,7 @@ split_active_entity:
     sta hold
     lda active_entity+1
     sta hold+1
-    ;jsr drop_gem_from_active_entity
+    jsr drop_gem_from_active_entity
     lda hold
     sta active_entity
     lda hold+1

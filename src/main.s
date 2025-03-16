@@ -72,6 +72,7 @@ zsmreserved: .res 256
 .include "laser.s"
 .include "collisions.s"
 .include "oneshot.s"
+.include "gem.s"
 
 start:
     ;jsr show_title
@@ -84,6 +85,7 @@ start:
     jsr create_ships
     jsr create_astbig_sprites
     jsr create_astsml_sprites
+    jsr create_gem_sprites
     jsr init_oneshots
     jsr launch_astbigs
 @waiting:

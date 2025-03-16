@@ -10,6 +10,7 @@ astsml_filename: .asciiz "astsml.bin"
 laser_filename: .asciiz "laser.bin"
 overlay_filename: .asciiz "overlay.bin"
 exp_filename: .asciiz "exp.bin"
+gem_filename: .asciiz "gem.bin"
 
 load_sprites:
     jsr load_star_tiles
@@ -21,6 +22,7 @@ load_sprites:
     jsr load_astsml
     jsr load_laser
     jsr load_exp
+    jsr load_gem
     rts
 
 load_star_tiles:
@@ -164,6 +166,22 @@ load_exp:
     lda #2 ; VRAM 1st bank
     ldx #<EXPLOSION_LOAD_ADDR 
     ldy #>EXPLOSION_LOAD_ADDR
+    jsr LOAD
+    rts
+
+load_gem:
+    lda #7
+    ldx #<gem_filename
+    ldy #>gem_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #3 ; VRAM 2nd bank
+    ldx #<GEM_LOAD_ADDR 
+    ldy #>GEM_LOAD_ADDR
     jsr LOAD
     rts
 
