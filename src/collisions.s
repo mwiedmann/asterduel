@@ -319,8 +319,8 @@ collision_ship:
     beq @ship_astsml
     cmp #ASTBIG_TYPE
     beq @ship_astbig
-    ; cmp #GEM_TYPE
-    ; beq @ship_gem
+    cmp #GEM_TYPE
+    beq @ship_gem
     ; cmp #WARP_TYPE
     ; beq @ship_warp
     rts
@@ -352,34 +352,10 @@ collision_ship:
     jsr destroy_ship
     jsr split_2
     rts
-; @ship_gem:
-;     ; Ship gets gem and points
-;     ; Get the gem num so we can get the points and score img
-;     lda hc_inner_entity_count
-;     sec
-;     sbc #GEM_SPRITE_NUM_START
-;     tax
-;     lda gem_number, x ; needed for displaying correct score image shortly
-;     sta os_frame
-;     ; get the points
-;     jsr clear_amount_to_add
-;     lda hc_inner_entity_count
-;     sec
-;     sbc #GEM_SPRITE_NUM_START
-;     clc
-;     rol
-;     tax
-;     lda gem_score, x
-;     sta amount_to_add
-;     inx
-;     lda gem_score, x
-;     sta amount_to_add+1
-;     jsr add_points
-;     jsr count_gems
-;     jsr sound_crystal
-;     jsr create_score_entity2
-;     jsr destroy_2
-;     rts
+@ship_gem:
+    jsr destroy_2
+    ; TODO: Count gems
+    rts
 ; @ship_warp:
 ;     lda #1
 ;     sta hit_warp

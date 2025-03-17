@@ -56,7 +56,6 @@ create_ship_1:
     lda #4
     ldy #Entity::_ang
     sta (active_entity), y
-    jsr create_laser_sprites
     ; pass the sprite_num for the ship and create its sprite
     lda #SHIP_1_SPRITE_NUM
     sta cs_sprite_num
