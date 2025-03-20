@@ -62,6 +62,12 @@ check_entities:
     lda (comp_entity1), y
     adc #0
     sta hc_comp_val1+1
+    jsr check_left_boundary ; check left boundary while we have adjusted x
+    lda #1
+    cmp boundary_collision
+    bne @continue_collision_check
+    jmp no_collision ; There was a boundary collision, move to next entity
+@continue_collision_check:
     clc
     ldy #Entity::_pixel_x
     lda (comp_entity2), y
@@ -254,6 +260,61 @@ last_inner_entity:
     sta comp_entity2+1
     jmp check_entities
 @done:
+    rts
+
+boundary_collision: .byte 0
+
+check_left_boundary:
+    lda #0
+    sta boundary_collision
+    ldy #Entity::_collision_id
+    lda (comp_entity1), y
+    and #BOUNDARY_LEFT_COLLISION_MATRIX
+    cmp #0
+    beq @done
+    ; can collide
+    lda hc_comp_val1+1
+    cmp #>(BOUNDARY_LEFT_X)
+    bcc @less_than_left
+    beq @check_low_bit
+    rts ; was > so not beyond boundary
+@check_low_bit:
+    lda hc_comp_val1
+    cmp #<(BOUNDARY_LEFT_X)
+    bcc @less_than_left
+    rts
+@less_than_left:
+    lda #1
+    sta boundary_collision
+    ; handle collision
+    ldy #Entity::_type
+    lda (comp_entity1), y
+    cmp #SHIP_TYPE
+    bne @check_laser
+    jsr destroy_ship
+    jsr create_explosion_active_entity
+    rts
+@check_laser:
+    cmp #LASER_TYPE
+    bne @check_astsml
+    jsr destroy_1
+    jsr create_explosion_active_entity
+    rts
+@check_astsml:
+    cmp #ASTSML_TYPE
+    bne @check_astbig
+    jsr destroy_1
+    jsr create_explosion_active_entity
+    rts
+@check_astbig:
+    cmp #ASTBIG_TYPE
+    bne @check_astbig
+    jsr split_1
+    rts
+@done:
+    ; Gem or other entity that can pass boundary
+    lda #0
+    sta boundary_collision
     rts
 
 hcs_keep_going: .byte 0

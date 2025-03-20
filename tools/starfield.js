@@ -12,7 +12,10 @@ for(let y=0; y<32; y++){
         if (x===0 || x===127 /*|| y===0 || y===14*/) {
             stars.push(solidTile)
             continue
-        }
+        } else if (x===40 || x===87 /*|| y===0 || y===14*/) { // barriers
+            stars.push(solidTile)
+            continue
+        } 
         let n=0
         if (!lastHit && Math.random()*100 > 60) {
             n=d
