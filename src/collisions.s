@@ -10,6 +10,9 @@ hc_overlap: .byte 0
 handle_collision:
     ldx #0
     stx hc_outer_entity_count
+    ldx #0
+    stx hc_inner_entity_count
+    jsr check_ship1_boundary
     ldx #1
     stx hc_inner_entity_count
     ldx #<entities ; entity 0
@@ -62,12 +65,6 @@ check_entities:
     lda (comp_entity1), y
     adc #0
     sta hc_comp_val1+1
-    jsr check_left_boundary ; check left boundary while we have adjusted x
-    lda #1
-    cmp boundary_collision
-    bne @continue_collision_check
-    jmp no_collision ; There was a boundary collision, move to next entity
-@continue_collision_check:
     clc
     ldy #Entity::_pixel_x
     lda (comp_entity2), y
@@ -78,6 +75,12 @@ check_entities:
     lda (comp_entity2), y
     adc #0
     sta hc_comp_val2+1
+    jsr check_left_boundary ; check left boundary while we have adjusted x
+    lda #1
+    cmp boundary_collision
+    bne @continue_collision_check
+    jmp no_collision ; There was a boundary collision, move to next entity
+@continue_collision_check:
     clc
     lda hc_comp_val2
     ldy #Entity::_coll_size
@@ -264,22 +267,40 @@ last_inner_entity:
 
 boundary_collision: .byte 0
 
+check_ship1_boundary:
+    ldx #<entities
+    stx comp_entity2
+    ldx #>entities
+    stx comp_entity2+1
+    clc
+    ldy #Entity::_pixel_x
+    lda (comp_entity2), y
+    ldy #Entity::_coll_adj
+    adc (comp_entity2), y ; pixel_x+coll_adj=x1
+    sta hc_comp_val1
+    ldy #Entity::_pixel_x+1
+    lda (comp_entity2), y
+    adc #0
+    sta hc_comp_val1+1
+    jsr check_left_boundary
+    rts
+
 check_left_boundary:
     lda #0
     sta boundary_collision
     ldy #Entity::_collision_id
-    lda (comp_entity1), y
+    lda (comp_entity2), y
     and #BOUNDARY_LEFT_COLLISION_MATRIX
     cmp #0
     beq @done
     ; can collide
-    lda hc_comp_val1+1
+    lda hc_comp_val2+1
     cmp #>(BOUNDARY_LEFT_X)
     bcc @less_than_left
     beq @check_low_bit
     rts ; was > so not beyond boundary
 @check_low_bit:
-    lda hc_comp_val1
+    lda hc_comp_val2
     cmp #<(BOUNDARY_LEFT_X)
     bcc @less_than_left
     rts
@@ -288,28 +309,35 @@ check_left_boundary:
     sta boundary_collision
     ; handle collision
     ldy #Entity::_type
-    lda (comp_entity1), y
+    lda (comp_entity2), y
     cmp #SHIP_TYPE
     bne @check_laser
-    jsr destroy_ship
+    lda hc_inner_entity_count
+    cmp #0
+    beq @ship_1
+    jsr destroy_ship_2
+    jsr create_explosion_active_entity
+    rts
+@ship_1:
+    jsr destroy_ship_1
     jsr create_explosion_active_entity
     rts
 @check_laser:
     cmp #LASER_TYPE
     bne @check_astsml
-    jsr destroy_1
+    jsr destroy_2
     jsr create_explosion_active_entity
     rts
 @check_astsml:
     cmp #ASTSML_TYPE
     bne @check_astbig
-    jsr destroy_1
+    jsr destroy_2
     jsr create_explosion_active_entity
     rts
 @check_astbig:
     cmp #ASTBIG_TYPE
     bne @check_astbig
-    jsr split_1
+    jsr split_2
     rts
 @done:
     ; Gem or other entity that can pass boundary
