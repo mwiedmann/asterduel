@@ -11,6 +11,7 @@ laser_filename: .asciiz "laser.bin"
 overlay_filename: .asciiz "overlay.bin"
 exp_filename: .asciiz "exp.bin"
 gem_filename: .asciiz "gem.bin"
+font_filename: .asciiz "font.bin"
 
 load_sprites:
     jsr load_star_tiles
@@ -23,6 +24,7 @@ load_sprites:
     jsr load_laser
     jsr load_exp
     jsr load_gem
+    jsr load_font
     rts
 
 load_star_tiles:
@@ -182,6 +184,22 @@ load_gem:
     lda #3 ; VRAM 2nd bank
     ldx #<GEM_LOAD_ADDR 
     ldy #>GEM_LOAD_ADDR
+    jsr LOAD
+    rts
+
+load_font:
+    lda #8
+    ldx #<font_filename
+    ldy #>font_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #2 ; VRAM 1st bank
+    ldx #<TILEBASE_L1_ADDR 
+    ldy #>TILEBASE_L1_ADDR
     jsr LOAD
     rts
 

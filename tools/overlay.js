@@ -9,9 +9,9 @@ const solidTile=5
 for(let y=0; y<32; y++){
     for(let x=0; x<64; x++){
         if (y === 0 || y === 15) {
-            overlay.push(solidTile,50)
+            overlay.push(59,0)
         } else {
-            overlay.push(0,0)
+            overlay.push(58,0)
         }
     }
 }
