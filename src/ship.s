@@ -47,6 +47,9 @@ create_ship_1:
     ldy #Entity::_sprite_num
     sta (active_entity), y
     jsr create_ship
+    lda #SHIP_1_TYPE
+    ldy #Entity::_type
+    sta (active_entity), y
     lda #%01011100
     ldy #Entity::_collision_matrix
     sta (active_entity), y
@@ -94,6 +97,9 @@ create_ship_2:
     ldy #Entity::_sprite_num
     sta (active_entity), y
     jsr create_ship
+    lda #SHIP_2_TYPE
+    ldy #Entity::_type
+    sta (active_entity), y
     lda #%10101100
     ldy #Entity::_collision_matrix
     sta (active_entity), y
@@ -128,9 +134,6 @@ create_ship:
     sta (active_entity), y
     lda #1
     ldy #Entity::_is_scroll_focus
-    sta (active_entity), y
-    lda #SHIP_TYPE
-    ldy #Entity::_type
     sta (active_entity), y
     lda #32
     ldy #Entity::_size

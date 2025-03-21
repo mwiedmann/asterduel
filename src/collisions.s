@@ -81,6 +81,12 @@ check_entities:
     bne @continue_collision_check
     jmp no_collision ; There was a boundary collision, move to next entity
 @continue_collision_check:
+    jsr check_right_boundary ; check left boundary while we have adjusted x
+    lda #1
+    cmp boundary_collision
+    bne @continue_collision_check2
+    jmp no_collision ; There was a boundary collision, move to next entity
+@continue_collision_check2:
     clc
     lda hc_comp_val2
     ldy #Entity::_coll_size
@@ -272,17 +278,22 @@ check_ship1_boundary:
     stx comp_entity2
     ldx #>entities
     stx comp_entity2+1
+    ldy #Entity::_active
+    lda (comp_entity2), y
+    cmp #0
+    beq @done
     clc
     ldy #Entity::_pixel_x
     lda (comp_entity2), y
     ldy #Entity::_coll_adj
     adc (comp_entity2), y ; pixel_x+coll_adj=x1
-    sta hc_comp_val1
+    sta hc_comp_val2
     ldy #Entity::_pixel_x+1
     lda (comp_entity2), y
     adc #0
-    sta hc_comp_val1+1
-    jsr check_left_boundary
+    sta hc_comp_val2+1
+    jsr check_right_boundary
+@done:
     rts
 
 check_left_boundary:
@@ -305,21 +316,58 @@ check_left_boundary:
     bcc @less_than_left
     rts
 @less_than_left:
+    jsr handle_boundary_collision
+    rts
+@done:
+    ; Gem or other entity that can pass boundary
+    lda #0
+    sta boundary_collision
+    rts
+
+check_right_boundary:
+    lda #0
+    sta boundary_collision
+    ldy #Entity::_collision_id
+    lda (comp_entity2), y
+    and #BOUNDARY_RIGHT_COLLISION_MATRIX
+    cmp #0
+    beq @done
+    ; can collide
+    lda hc_comp_val2+1
+    cmp #>(BOUNDARY_RIGHT_X)
+    beq @check_low_bit
+    bcs @gt_right
+    rts ; was > so not beyond boundary
+@check_low_bit:
+    lda hc_comp_val2
+    cmp #<(BOUNDARY_RIGHT_X)
+    bcs @gt_right
+    rts
+@gt_right:
+    jsr handle_boundary_collision
+    rts
+@done:
+    ; Gem or other entity that can pass boundary
+    lda #0
+    sta boundary_collision
+    rts
+
+
+handle_boundary_collision:
     lda #1
     sta boundary_collision
     ; handle collision
     ldy #Entity::_type
     lda (comp_entity2), y
-    cmp #SHIP_TYPE
-    bne @check_laser
-    lda hc_inner_entity_count
-    cmp #0
-    beq @ship_1
-    jsr destroy_ship_2
+    cmp #SHIP_1_TYPE
+    bne @check_ship_2
+    jsr destroy_ship_1
     jsr create_explosion_active_entity
     rts
-@ship_1:
-    jsr destroy_ship_1
+@check_ship_2:
+    cmp #SHIP_2_TYPE
+    bne @check_laser
+    jsr destroy_ship_2
     jsr create_explosion_active_entity
     rts
 @check_laser:
@@ -339,11 +387,6 @@ check_left_boundary:
     bne @check_astbig
     jsr split_2
     rts
-@done:
-    ; Gem or other entity that can pass boundary
-    lda #0
-    sta boundary_collision
-    rts
 
 hcs_keep_going: .byte 0
 
@@ -353,7 +396,12 @@ handle_collision_sprites:
     ;jsr clear_amount_to_add ; Clear the scoring amount
     ldy #Entity::_type
     lda (comp_entity1), y
-    cmp #SHIP_TYPE
+    cmp #SHIP_1_TYPE
+    bne @check_ship_2
+    jsr collision_ship
+    bra @done
+@check_ship_2:
+    cmp #SHIP_2_TYPE
     bne @check_laser
     jsr collision_ship
     bra @done

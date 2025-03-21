@@ -170,7 +170,7 @@ update_sprite:
     sta us_visible
     ldy #Entity::_type ; Entity visibility
     lda (active_entity), y
-    cmp #SHIP_TYPE
+    cmp #SHIP_1_TYPE
     bne @skip_thrust
     lda thrusting
     cmp #0
