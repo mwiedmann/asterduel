@@ -75,7 +75,7 @@ zsmreserved: .res 256
 .include "gem.s"
 
 start:
-    ;jsr show_title
+    jsr show_title
     ;jsr sound_init
     jsr load_mainpal
     jsr load_sprites
