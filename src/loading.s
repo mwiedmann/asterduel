@@ -165,7 +165,7 @@ load_exp:
     ldx #8
     ldy #2
     jsr SETLFS
-    lda #2 ; VRAM 1st bank
+    lda #3 ; VRAM 2nd bank
     ldx #<EXPLOSION_LOAD_ADDR 
     ldy #>EXPLOSION_LOAD_ADDR
     jsr LOAD
