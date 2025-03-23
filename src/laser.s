@@ -3,6 +3,11 @@ LASER_S = 1
 
 
 create_laser_sprites:
+    jsr create_laser1_sprites
+    jsr create_laser2_sprites
+    rts
+
+create_laser1_sprites:
     ldx #0
     stx sp_entity_count
     ldx #SHIP_1_LASER_SPRITE_NUM_START
@@ -32,6 +37,12 @@ create_laser_sprites:
     ldy #Entity::_image_addr+2
     sta (active_entity), y
     jsr set_laser_attr
+    lda #%01001000
+    ldy #Entity::_collision_matrix
+    sta (active_entity), y
+    lda #%00100000
+    ldy #Entity::_collision_id
+    sta (active_entity), y
     lda sp_num
     ldy #Entity::_sprite_num
     sta (active_entity), y
@@ -51,7 +62,66 @@ create_laser_sprites:
     inc sp_num ; 2 because of ghost sprites
     inc sp_entity_count
     lda sp_entity_count
-    cmp #(SHIP_1_LASER_COUNT+SHIP_2_LASER_COUNT) ; TODO: For now, they share laser code
+    cmp #SHIP_1_LASER_COUNT
+    bne @next_laser
+    rts
+
+create_laser2_sprites:
+    ldx #0
+    stx sp_entity_count
+    ldx #SHIP_2_LASER_SPRITE_NUM_START
+    stx sp_num
+    ldx #<(.sizeof(Entity)*SHIP_2_LASER_ENTITY_NUM_START)
+    stx sp_offset
+    ldx #>(.sizeof(Entity)*SHIP_2_LASER_ENTITY_NUM_START)
+    stx sp_offset+1
+@next_laser:
+    clc
+    lda #<entities
+    adc sp_offset
+    sta active_entity
+    lda #>entities
+    adc sp_offset+1
+    sta active_entity+1
+    lda #0
+    sta param1
+    jsr reset_active_entity
+    lda #<SHIP_2_LASER_LOAD_ADDR ; Img addr
+    ldy #Entity::_image_addr
+    sta (active_entity), y
+    lda #>SHIP_2_LASER_LOAD_ADDR ; Img addr
+    ldy #Entity::_image_addr+1
+    sta (active_entity), y
+    lda #<(SHIP_2_LASER_LOAD_ADDR>>16) ; Img addr
+    ldy #Entity::_image_addr+2
+    sta (active_entity), y
+    jsr set_laser_attr
+    lda #%10001000
+    ldy #Entity::_collision_matrix
+    sta (active_entity), y
+    lda #%00010000
+    ldy #Entity::_collision_id
+    sta (active_entity), y
+    lda sp_num
+    ldy #Entity::_sprite_num
+    sta (active_entity), y
+    sta cs_sprite_num ; pass the sprite_num for the enemy and create its sprite
+    lda #%01010000
+    sta cs_size ; 16x16
+    jsr create_sprite
+    inc cs_sprite_num
+    jsr create_sprite
+    lda sp_offset
+    adc #.sizeof(Entity)
+    sta sp_offset
+    lda sp_offset+1
+    adc #0
+    sta sp_offset+1
+    inc sp_num
+    inc sp_num ; 2 because of ghost sprites
+    inc sp_entity_count
+    lda sp_entity_count
+    cmp #SHIP_2_LASER_COUNT
     bne @next_laser
     rts
 
@@ -75,25 +145,6 @@ set_laser_attr:
     lda #2
     ldy #Entity::_coll_adj
     sta (active_entity), y
-    lda sp_entity_count
-    cmp #3
-    bcs @ship_2
-    ; ship 1 collision matrix
-    lda #%01001000
-    ldy #Entity::_collision_matrix
-    sta (active_entity), y
-    lda #%00100000
-    ldy #Entity::_collision_id
-    sta (active_entity), y
-    bra @collisions_done
-@ship_2:
-    lda #%10001000
-    ldy #Entity::_collision_matrix
-    sta (active_entity), y
-    lda #%00010000
-    ldy #Entity::_collision_id
-    sta (active_entity), y
-@collisions_done:
     lda #1
     ldy #Entity::_has_accel
     sta (active_entity), y

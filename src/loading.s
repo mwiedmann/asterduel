@@ -3,11 +3,15 @@ LOADING_S = 1
 
 star_tiles_filename: .asciiz "stars.bin"
 star_field_filename: .asciiz "field.bin"
-ship_filename: .asciiz "ship.bin"
-ship_thrust_filename: .asciiz "shipthr.bin"
+ship_1_filename: .asciiz "ship1.bin"
+ship_1_thrust_filename: .asciiz "shipthr1.bin"
+ship_2_filename: .asciiz "ship2.bin"
+ship_2_thrust_filename: .asciiz "shipthr2.bin"
+
 astbig_filename: .asciiz "astbig.bin"
 astsml_filename: .asciiz "astsml.bin"
-laser_filename: .asciiz "laser.bin"
+laser_1_filename: .asciiz "laser1.bin"
+laser_2_filename: .asciiz "laser2.bin"
 overlay_filename: .asciiz "overlay.bin"
 exp_filename: .asciiz "exp.bin"
 gem_filename: .asciiz "gem.bin"
@@ -17,11 +21,14 @@ load_sprites:
     jsr load_star_tiles
     jsr load_star_field
     jsr load_overlay
-    jsr load_ship
-    jsr load_ship_thust
+    jsr load_ship1
+    jsr load_ship_thust1
+    jsr load_ship2
+    jsr load_ship_thust2
     jsr load_astbig
     jsr load_astsml
-    jsr load_laser
+    jsr load_laser1
+    jsr load_laser2
     jsr load_exp
     jsr load_gem
     jsr load_font
@@ -75,10 +82,10 @@ load_overlay:
     jsr LOAD
     rts
 
-load_ship:
-    lda #8
-    ldx #<ship_filename
-    ldy #>ship_filename
+load_ship1:
+    lda #9
+    ldx #<ship_1_filename
+    ldy #>ship_1_filename
     jsr SETNAM
     ; 0,8,2
     lda #0
@@ -86,15 +93,31 @@ load_ship:
     ldy #2
     jsr SETLFS
     lda #2 ; VRAM 1st bank
-    ldx #<SHIP_LOAD_ADDR 
-    ldy #>SHIP_LOAD_ADDR
+    ldx #<SHIP_1_LOAD_ADDR 
+    ldy #>SHIP_1_LOAD_ADDR
     jsr LOAD
     rts
 
-load_ship_thust:
-    lda #11
-    ldx #<ship_thrust_filename
-    ldy #>ship_thrust_filename
+load_ship2:
+    lda #9
+    ldx #<ship_2_filename
+    ldy #>ship_2_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #3 ; VRAM 2nd bank
+    ldx #<SHIP_2_LOAD_ADDR 
+    ldy #>SHIP_2_LOAD_ADDR
+    jsr LOAD
+    rts
+
+load_ship_thust1:
+    lda #12
+    ldx #<ship_1_thrust_filename
+    ldy #>ship_1_thrust_filename
     jsr SETNAM
     ; 0,8,2
     lda #0
@@ -102,8 +125,25 @@ load_ship_thust:
     ldy #2
     jsr SETLFS
     lda #2 ; VRAM 1st bank
-    ldx #<SHIP_THRUST_LOAD_ADDR 
-    ldy #>SHIP_THRUST_LOAD_ADDR
+    ldx #<SHIP_1_THRUST_LOAD_ADDR 
+    ldy #>SHIP_1_THRUST_LOAD_ADDR
+    jsr LOAD
+    rts
+
+
+load_ship_thust2:
+    lda #12
+    ldx #<ship_2_thrust_filename
+    ldy #>ship_2_thrust_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #3 ; VRAM 2nd bank
+    ldx #<SHIP_2_THRUST_LOAD_ADDR 
+    ldy #>SHIP_2_THRUST_LOAD_ADDR
     jsr LOAD
     rts
 
@@ -139,10 +179,10 @@ load_astsml:
     jsr LOAD
     rts
 
-load_laser:
-    lda #9
-    ldx #<laser_filename
-    ldy #>laser_filename
+load_laser1:
+    lda #10
+    ldx #<laser_1_filename
+    ldy #>laser_1_filename
     jsr SETNAM
     ; 0,8,2
     lda #0
@@ -152,6 +192,22 @@ load_laser:
     lda #2 ; VRAM 1st bank
     ldx #<SHIP_1_LASER_LOAD_ADDR 
     ldy #>SHIP_1_LASER_LOAD_ADDR
+    jsr LOAD
+    rts
+
+load_laser2:
+    lda #10
+    ldx #<laser_2_filename
+    ldy #>laser_2_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #3 ; VRAM 2nd bank
+    ldx #<SHIP_2_LASER_LOAD_ADDR 
+    ldy #>SHIP_2_LASER_LOAD_ADDR
     jsr LOAD
     rts
 

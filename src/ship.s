@@ -47,6 +47,15 @@ create_ship_1:
     ldy #Entity::_sprite_num
     sta (active_entity), y
     jsr create_ship
+    lda #<SHIP_1_LOAD_ADDR ; Ship img addr
+    ldy #Entity::_image_addr
+    sta (active_entity), y
+    lda #>SHIP_1_LOAD_ADDR ; Ship img addr
+    ldy #Entity::_image_addr+1
+    sta (active_entity), y
+    lda #<(SHIP_1_LOAD_ADDR>>16) ; Ship img addr
+    ldy #Entity::_image_addr+2
+    sta (active_entity), y
     lda #SHIP_1_TYPE
     ldy #Entity::_type
     sta (active_entity), y
@@ -97,6 +106,15 @@ create_ship_2:
     ldy #Entity::_sprite_num
     sta (active_entity), y
     jsr create_ship
+    lda #<SHIP_2_LOAD_ADDR ; Ship img addr
+    ldy #Entity::_image_addr
+    sta (active_entity), y
+    lda #>SHIP_2_LOAD_ADDR ; Ship img addr
+    ldy #Entity::_image_addr+1
+    sta (active_entity), y
+    lda #<(SHIP_2_LOAD_ADDR>>16) ; Ship img addr
+    ldy #Entity::_image_addr+2
+    sta (active_entity), y
     lda #SHIP_2_TYPE
     ldy #Entity::_type
     sta (active_entity), y
@@ -153,15 +171,6 @@ create_ship:
     sta (active_entity), y ; Ship wraps around screen
     ldy #Entity::_has_ang
     sta (active_entity), y ; Ship sprite has angle based frames
-    lda #<SHIP_LOAD_ADDR ; Ship img addr
-    ldy #Entity::_image_addr
-    sta (active_entity), y
-    lda #>SHIP_LOAD_ADDR ; Ship img addr
-    ldy #Entity::_image_addr+1
-    sta (active_entity), y
-    lda #<(SHIP_LOAD_ADDR>>16) ; Ship img addr
-    ldy #Entity::_image_addr+2
-    sta (active_entity), y
     rts
 
 set_ship_1_as_active:
@@ -193,20 +202,20 @@ set_ship_2_as_ghost:
     rts
 
 thrusting_ship_img:
-    lda #<SHIP_THRUST_LOAD_ADDR
+    lda #<SHIP_1_THRUST_LOAD_ADDR
     sta us_img_addr
-    lda #>SHIP_THRUST_LOAD_ADDR
+    lda #>SHIP_1_THRUST_LOAD_ADDR
     sta us_img_addr+1
-    lda #<(SHIP_THRUST_LOAD_ADDR>>16)
+    lda #<(SHIP_1_THRUST_LOAD_ADDR>>16)
     sta us_img_addr+2
     rts
 
 normal_ship_img:
-    lda #<SHIP_LOAD_ADDR
+    lda #<SHIP_1_LOAD_ADDR
     sta us_img_addr
-    lda #>SHIP_LOAD_ADDR
+    lda #>SHIP_1_LOAD_ADDR
     sta us_img_addr+1
-    lda #<(SHIP_LOAD_ADDR>>16)
+    lda #<(SHIP_1_LOAD_ADDR>>16)
     sta us_img_addr+2
     rts
 
