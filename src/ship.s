@@ -33,10 +33,10 @@ create_ship_1:
     lda #>(SHIP_1_X_START<<5)
     ldy #Entity::_x+1
     sta (active_entity), y
-    lda #<((120-16)<<5)
+    lda #<((120-8)<<5)
     ldy #Entity::_y
     sta (active_entity), y
-    lda #>((120-16)<<5)
+    lda #>((120-8)<<5)
     ldy #Entity::_y+1
     sta (active_entity), y
     ; Top lane for ship_1
@@ -92,10 +92,10 @@ create_ship_2:
     lda #>(SHIP_2_X_START<<5)
     ldy #Entity::_x+1
     sta (active_entity), y
-    lda #<((120-16)<<5)
+    lda #<((120-8)<<5)
     ldy #Entity::_y
     sta (active_entity), y
-    lda #>((120-16)<<5)
+    lda #>((120-8)<<5)
     ldy #Entity::_y+1
     sta (active_entity), y
     ; Bottom lane for ship_2
@@ -127,11 +127,11 @@ create_ship_2:
     lda #12
     ldy #Entity::_ang
     sta (active_entity), y
-    lda #<(-32)
-    ldy #Entity::_vel_x
-    sta (active_entity), y
-    lda #>(-32)
-    ldy #Entity::_vel_x+1
+    ; lda #<(-32)
+    ; ldy #Entity::_vel_x
+    ; sta (active_entity), y
+    ; lda #>(-32)
+    ; ldy #Entity::_vel_x+1
     sta (active_entity), y
     ; pass the sprite_num for the ship and create its sprite
     lda #SHIP_2_SPRITE_NUM

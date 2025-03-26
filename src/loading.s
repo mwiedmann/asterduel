@@ -173,7 +173,7 @@ load_astsml:
     ldx #8
     ldy #2
     jsr SETLFS
-    lda #2 ; VRAM 1st bank
+    lda #3 ; VRAM 2nd bank
     ldx #<ASTSML_LOAD_ADDR 
     ldy #>ASTSML_LOAD_ADDR
     jsr LOAD

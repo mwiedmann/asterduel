@@ -4,86 +4,180 @@ const stars = []
 
 let d=1
 let lastHit=false
-const solidTile=5
-const leftBarrierTile=6
-const rightBarrierTile=7
 
-const ship1YStart= 5
+const shipYStart= 5
+const ship2XStart=127
+const ship2TileOffset=21
+const leftBarrierTile=25
+const rightBarrierTile=ship2TileOffset+25
+
+const checkBase1 = (stars,x,y) => {
+    if (x===0 && y===shipYStart+1) {
+        stars.push(8,0)
+        return true
+    } else if (x===0 && y===shipYStart+2) {
+        stars.push(7,0)
+        return true
+    } else if (x===0 && y===shipYStart+3) {
+        stars.push(6,0)
+        return true
+    } else if (x===0 && y===shipYStart+4) {
+        stars.push(5,0)
+        return true
+    } else if (x===1 && y===shipYStart-1) {
+        stars.push(14,0)
+        return true
+    } else if (x===1 && y===shipYStart) {
+        stars.push(14,0)
+        return true
+    } else if (x===1 && y===shipYStart+1) {
+        stars.push(13,0)
+        return true
+    } else if (x===1 && y===shipYStart+2) {
+        stars.push(12,0)
+        return true
+    } else if (x===1 && y===shipYStart+3) {
+        stars.push(11,0)
+        return true
+    } else if (x===1 && y===shipYStart+4) {
+        stars.push(10,0)
+        return true
+    } else if (x===1 && y===shipYStart+5) {
+        stars.push(9,0)
+        return true
+    } else if (x===1 && y===shipYStart+6) {
+        stars.push(9,0)
+        return true
+    } else if (x===2 && y===shipYStart-1) {
+        stars.push(20,0)
+        return true
+    } else if (x===2 && y===shipYStart) {
+        stars.push(20,0)
+        return true
+    } else if (x===2 && y===shipYStart+1) {
+        stars.push(19,0)
+        return true
+    } else if (x===2 && y===shipYStart+2) {
+        stars.push(18,0)
+        return true
+    } else if (x===2 && y===shipYStart+3) {
+        stars.push(17,0)
+        return true
+    } else if (x===2 && y===shipYStart+4) {
+        stars.push(16,0)
+        return true
+    } else if (x===2 && y===shipYStart+5) {
+        stars.push(15,0)
+        return true
+    } else if (x===2 && y===shipYStart+6) {
+        stars.push(15,0)
+        return true
+    } else if (x===3 && y===shipYStart+2) {
+        stars.push(22,0)
+        return true
+    } else if (x===3 && y===shipYStart+3) {
+        stars.push(21,0)
+        return true
+    } else if (x===4 && y===shipYStart+2) {
+        stars.push(24,0)
+        return true
+    } else if (x===4 && y===shipYStart+3) {
+        stars.push(23,0)
+        return true
+    } else if (x<=1) {
+        stars.push(25,0)
+        return true
+    } 
+
+    return false
+}
+
+const checkBase2 = (stars,x,y) => {
+    if (x===ship2XStart && y===shipYStart+1) {
+        stars.push(ship2TileOffset+8,0)
+        return true
+    } else if (x===ship2XStart && y===shipYStart+2) {
+        stars.push(ship2TileOffset+7,0)
+        return true
+    } else if (x===ship2XStart && y===shipYStart+3) {
+        stars.push(ship2TileOffset+6,0)
+        return true
+    } else if (x===ship2XStart && y===shipYStart+4) {
+        stars.push(ship2TileOffset+5,0)
+        return true
+    } else if (x===ship2XStart-1 && y===shipYStart-1) {
+        stars.push(ship2TileOffset+14,0)
+        return true
+    } else if (x===ship2XStart-1 && y===shipYStart) {
+        stars.push(ship2TileOffset+14,0)
+        return true
+    } else if (x===ship2XStart-1 && y===shipYStart+1) {
+        stars.push(ship2TileOffset+13,0)
+        return true
+    } else if (x===ship2XStart-1 && y===shipYStart+2) {
+        stars.push(ship2TileOffset+12,0)
+        return true
+    } else if (x===ship2XStart-1 && y===shipYStart+3) {
+        stars.push(ship2TileOffset+11,0)
+        return true
+    } else if (x===ship2XStart-1 && y===shipYStart+4) {
+        stars.push(ship2TileOffset+10,0)
+        return true
+    } else if (x===ship2XStart-1 && y===shipYStart+5) {
+        stars.push(ship2TileOffset+9,0)
+        return true
+    } else if (x===ship2XStart-1 && y===shipYStart+6) {
+        stars.push(ship2TileOffset+9,0)
+        return true
+    } else if (x===ship2XStart-2 && y===shipYStart-1) {
+        stars.push(ship2TileOffset+20,0)
+        return true
+    } else if (x===ship2XStart-2 && y===shipYStart) {
+        stars.push(ship2TileOffset+20,0)
+        return true
+    } else if (x===ship2XStart-2 && y===shipYStart+1) {
+        stars.push(ship2TileOffset+19,0)
+        return true
+    } else if (x===ship2XStart-2 && y===shipYStart+2) {
+        stars.push(ship2TileOffset+18,0)
+        return true
+    } else if (x===ship2XStart-2 && y===shipYStart+3) {
+        stars.push(ship2TileOffset+17,0)
+        return true
+    } else if (x===ship2XStart-2 && y===shipYStart+4) {
+        stars.push(ship2TileOffset+16,0)
+        return true
+    } else if (x===ship2XStart-2 && y===shipYStart+5) {
+        stars.push(ship2TileOffset+15,0)
+        return true
+    } else if (x===ship2XStart-2 && y===shipYStart+6) {
+        stars.push(ship2TileOffset+15,0)
+        return true
+    } else if (x===ship2XStart-3 && y===shipYStart+2) {
+        stars.push(ship2TileOffset+22,0)
+        return true
+    } else if (x===ship2XStart-3 && y===shipYStart+3) {
+        stars.push(ship2TileOffset+21,0)
+        return true
+    } else if (x===ship2XStart-4 && y===shipYStart+2) {
+        stars.push(ship2TileOffset+24,0)
+        return true
+    } else if (x===ship2XStart-4 && y===shipYStart+3) {
+        stars.push(ship2TileOffset+23,0)
+        return true
+    } else if (x>=ship2XStart-1) {
+        stars.push(ship2TileOffset+25,0)
+        return true
+    } 
+
+    return false
+}
 
 for(let y=0; y<32; y++){
     for(let x=0; x<128; x++){
-        // Solid tile on edges
-        if (x===0 && y===ship1YStart+1) {
-            stars.push(8,0)
+        if (checkBase1(stars,x,y)) {
             continue
-        } else if (x===0 && y===ship1YStart+2) {
-            stars.push(7,0)
-            continue
-        } else if (x===0 && y===ship1YStart+3) {
-            stars.push(6,0)
-            continue
-        } else if (x===0 && y===ship1YStart+4) {
-            stars.push(5,0)
-            continue
-        } else if (x===1 && y===ship1YStart-1) {
-            stars.push(14,0)
-            continue
-        } else if (x===1 && y===ship1YStart) {
-            stars.push(14,0)
-            continue
-        } else if (x===1 && y===ship1YStart+1) {
-            stars.push(13,0)
-            continue
-        } else if (x===1 && y===ship1YStart+2) {
-            stars.push(12,0)
-            continue
-        } else if (x===1 && y===ship1YStart+3) {
-            stars.push(11,0)
-            continue
-        } else if (x===1 && y===ship1YStart+4) {
-            stars.push(10,0)
-            continue
-        } else if (x===1 && y===ship1YStart+5) {
-            stars.push(9,0)
-            continue
-        } else if (x===1 && y===ship1YStart+6) {
-            stars.push(9,0)
-            continue
-        } else if (x===2 && y===ship1YStart-1) {
-            stars.push(20,0)
-            continue
-        } else if (x===2 && y===ship1YStart) {
-            stars.push(20,0)
-            continue
-        } else if (x===2 && y===ship1YStart+1) {
-            stars.push(19,0)
-            continue
-        } else if (x===2 && y===ship1YStart+2) {
-            stars.push(18,0)
-            continue
-        } else if (x===2 && y===ship1YStart+3) {
-            stars.push(17,0)
-            continue
-        } else if (x===2 && y===ship1YStart+4) {
-            stars.push(16,0)
-            continue
-        } else if (x===2 && y===ship1YStart+5) {
-            stars.push(15,0)
-            continue
-        } else if (x===2 && y===ship1YStart+6) {
-            stars.push(15,0)
-            continue
-        } else if (x===3 && y===ship1YStart+2) {
-            stars.push(22,0)
-            continue
-        } else if (x===3 && y===ship1YStart+3) {
-            stars.push(21,0)
-            continue
-        } else if (x===4 && y===ship1YStart+2) {
-            stars.push(24,0)
-            continue
-        } else if (x===4 && y===ship1YStart+3) {
-            stars.push(23,0)
+        } else if (checkBase2(stars,x,y)) {
             continue
         } else if (x===40) { // barriers
             stars.push(leftBarrierTile,0)

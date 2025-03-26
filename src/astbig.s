@@ -1,9 +1,9 @@
 .ifndef ASTBIG_S
 ASTBIG_S = 1
 
-astbig_start_x:         .word AST_LAUNCH_X_START<<5, (AST_LAUNCH_X_START+AST_LAUNCH_X_ADJ)<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*2))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*3))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*4))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*5))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*6))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*7))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*8))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*9))<<5
-astbig_start_ang:       .word 1, 7, 15, 6, 7, 1, 9, 15, 9, 14
-astbig_accel:           .byte 1, 2, 1,  2, 1, 2, 1, 1,  2, 1
+astbig_start_x:         .word AST_LAUNCH_X_START<<5, (AST_LAUNCH_X_START+AST_LAUNCH_X_ADJ)<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*2))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*3))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*4))<<5, (AST_LAUNCH_X_START+(AST_LAUNCH_X_ADJ*5))<<5
+astbig_start_ang:       .word 1, 7, 1, 9, 15, 9
+astbig_accel:           .byte 1, 2, 2, 1, 1,  2
 
 create_astbig_sprites:
     lda #<ASTBIG_LOAD_ADDR
