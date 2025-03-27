@@ -391,6 +391,8 @@ scroll_lane:
 @done:
     rts
 
+lastx: .word 0
+
 move_entity:
     ; active_entity holds the address of the entity to move
     ; Add velocity to y position
@@ -412,6 +414,7 @@ move_entity:
     ; Add velocity to x position
     ldy #Entity::_x ; Point to _x lo bit
     lda (active_entity), y ; Get the _x (lo bit)
+    sta lastx
     ldy #Entity::_vel_x ; Get the _vel_x (lo bit)
     clc
     adc (active_entity), y ; Add the _vel_x (lo bit, moves entity x position)
@@ -420,10 +423,53 @@ move_entity:
     
     ldy #Entity::_x+1 ; Point to _x hi bit
     lda (active_entity), y ; Get the _x (hi bit)
+    sta lastx+1
     ldy #Entity::_vel_x+1 ; Point to the _vel_x (hi bit)
     adc (active_entity), y ; Add the _vel_x (hi bit, moves entity x position)
     ldy #Entity::_x+1 ; Point back to _x (hi bit) so we can update it
     sta (active_entity), y ; Store the updated _x (hi bit)
+
+    ldy #Entity::_type
+    lda (active_entity), y
+    cmp #SHIP_1_TYPE
+    bne @check_ship_2
+    ; Check if X<0
+    ldy #Entity::_x+1 ; Point to _y hi bit
+    lda (active_entity), y
+    cmp #>LANE_X_BIG
+    bcc @skip_ship_x_checks
+    bne @ship_ob
+    ; check low bits
+    ldy #Entity::_x ; Point to _y lo bit
+    lda (active_entity), y
+    cmp #<LANE_X_BIG
+    bcs @ship_ob
+    bra @skip_ship_x_checks
+
+@check_ship_2:
+    ; TODO: Check ship 2 X OB
+    bra @skip_ship_x_checks
+@ship_ob:
+    ; Put to last position
+    lda lastx
+    ldy #Entity::_x
+    sta (active_entity), y
+    lda lastx+1
+    ldy #Entity::_x+1
+    sta (active_entity), y
+    ; and reverse velocity
+    ldy #Entity::_vel_x
+    lda (active_entity), y
+    eor #$FF
+    clc
+    adc #1
+    sta (active_entity), y
+    ldy #Entity::_vel_x+1
+    lda (active_entity), y
+    eor #$FF
+    adc #0
+    sta (active_entity), y
+@skip_ship_x_checks:
     ; Check y bounds
     ; First check for a LARGE y pos (means went off top to negative number)
     ldy #Entity::_y+1 ; Point to _y hi bit
