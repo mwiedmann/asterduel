@@ -273,6 +273,30 @@ last_inner_entity:
 
 boundary_collision: .byte 0
 
+check_ship_1_drop_energy:
+    lda ship_1_energy
+    cmp #0
+    beq @done ; no energy
+    lda hc_comp_val2+1
+    cmp #0
+    bne @done
+    lda hc_comp_val2
+    cmp #BASE_SHIP_1_ENERGY_DROP_X
+    bcs @reset_drop_count
+    dec ship_1_drop_count
+    lda ship_1_drop_count
+    cmp #0
+    bne @done
+    jsr fire_laser_1
+    dec ship_1_energy
+    bra @reset_drop_count
+@done:
+    rts
+@reset_drop_count:
+    lda #BASE_ENERGY_COUNT
+    sta ship_1_drop_count
+    rts
+
 check_ship1_boundary:
     ldx #<entities
     stx comp_entity2
@@ -292,6 +316,7 @@ check_ship1_boundary:
     lda (comp_entity2), y
     adc #0
     sta hc_comp_val2+1
+    jsr check_ship_1_drop_energy
     jsr check_right_boundary
 @done:
     rts
@@ -491,7 +516,7 @@ collision_ship:
     rts
 @ship_gem:
     jsr destroy_2
-    ; TODO: Count gems
+    jsr ship_energy ; increase ship energy count
     rts
 ; @ship_warp:
 ;     lda #1
@@ -677,6 +702,16 @@ create_explosion_active_entity:
 ;     ; os_frame must already be set
 ;     jsr create_score
 ;     rts
+
+ship_energy:
+    lda hc_outer_entity_count
+    cmp #0
+    bne @ship_2
+    inc ship_1_energy
+    rts
+@ship_2:
+    inc ship_2_energy
+    rts
 
 destroy_ship:
     lda hc_outer_entity_count
