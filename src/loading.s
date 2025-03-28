@@ -272,8 +272,8 @@ load_mine:
     ldy #2
     jsr SETLFS
     lda #3 ; VRAM 2nd bank
-    ldx #<MINE_LOAD_ADDR 
-    ldy #>MINE_LOAD_ADDR
+    ldx #<MINE_1_LOAD_ADDR 
+    ldy #>MINE_1_LOAD_ADDR
     jsr LOAD
     rts
 

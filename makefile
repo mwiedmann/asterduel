@@ -28,7 +28,7 @@ img:
 	node tools/gimp-img-convert.js gfx/sprites.data build/SHIP2.BIN 32 32 8 24 5 1
 	node tools/gimp-img-convert.js gfx/sprites.data build/SHIPTHR2.BIN 32 32 8 32 5 1
 	node tools/gimp-img-convert.js gfx/sprites.data build/LASER2.BIN 16 16 16 80 5 1
-	node tools/gimp-img-convert.js gfx/sprites.data build/MINE.BIN 16 16 16 160 1 1
+	node tools/gimp-img-convert.js gfx/sprites.data build/MINE.BIN 16 16 16 160 2 1
 	node tools/gimp-img-convert.js gfx/sprites.data build/ASTBIG.BIN 32 32 8 48 8 2
 	node tools/gimp-img-convert.js gfx/sprites.data build/ASTSML.BIN 16 16 16 256 16 1
 	node tools/gimp-img-convert.js gfx/sprites.data build/GEM.BIN 16 16 16 272 4 1

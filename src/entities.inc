@@ -10,8 +10,8 @@ GEM_TYPE = 5
 WARP_TYPE = 6
 ENEMY_TYPE = 7
 ENEMY_LASER_TYPE = 8
-MINE_TYPE = 9
-SAFE_TYPE = 10
+MINE_1_TYPE = 9
+MINE_2_TYPE = 10
 
 .struct Entity
     _x .word

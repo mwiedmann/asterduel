@@ -103,7 +103,7 @@ start:
     lda launch_ship_1_mine
     cmp #0
     beq @skip_mines
-    jsr launch_mine
+    jsr launch_mine_1
     lda #0
     sta launch_ship_1_mine
 @skip_mines:
