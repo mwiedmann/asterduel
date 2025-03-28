@@ -273,6 +273,8 @@ last_inner_entity:
 
 boundary_collision: .byte 0
 
+launch_ship_1_mine: .byte 0
+
 check_ship_1_drop_energy:
     lda ship_1_energy
     cmp #0
@@ -287,7 +289,7 @@ check_ship_1_drop_energy:
     lda ship_1_drop_count
     cmp #0
     bne @done
-    jsr fire_laser_1
+    inc launch_ship_1_mine
     dec ship_1_energy
     bra @reset_drop_count
 @done:
@@ -316,8 +318,8 @@ check_ship1_boundary:
     lda (comp_entity2), y
     adc #0
     sta hc_comp_val2+1
-    jsr check_ship_1_drop_energy
     jsr check_right_boundary
+    jsr check_ship_1_drop_energy
 @done:
     rts
 

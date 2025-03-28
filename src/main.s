@@ -73,6 +73,7 @@ zsmreserved: .res 256
 .include "collisions.s"
 .include "oneshot.s"
 .include "gem.s"
+.include "mine.s"
 
 start:
     jsr show_title
@@ -87,6 +88,7 @@ start:
     jsr create_astbig_sprites
     jsr create_astsml_sprites
     jsr create_gem_sprites
+    jsr create_mine_sprites
     jsr init_oneshots
     jsr launch_astbigs
 @waiting:
@@ -98,6 +100,13 @@ start:
     jsr update_oneshots
     jsr show_ghosts
     jsr handle_collision
+    lda launch_ship_1_mine
+    cmp #0
+    beq @skip_mines
+    jsr launch_mine
+    lda #0
+    sta launch_ship_1_mine
+@skip_mines:
     lda #0
     sta waitflag
     bra @waiting

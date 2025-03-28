@@ -16,6 +16,7 @@ overlay_filename: .asciiz "overlay.bin"
 exp_filename: .asciiz "exp.bin"
 gem_filename: .asciiz "gem.bin"
 font_filename: .asciiz "font.bin"
+mine_filename: .asciiz "mine.bin"
 
 load_sprites:
     jsr load_star_tiles
@@ -32,6 +33,7 @@ load_sprites:
     jsr load_exp
     jsr load_gem
     jsr load_font
+    jsr load_mine
     rts
 
 load_star_tiles:
@@ -256,6 +258,22 @@ load_font:
     lda #2 ; VRAM 1st bank
     ldx #<TILEBASE_L1_ADDR 
     ldy #>TILEBASE_L1_ADDR
+    jsr LOAD
+    rts
+
+load_mine:
+    lda #8
+    ldx #<mine_filename
+    ldy #>mine_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #3 ; VRAM 2nd bank
+    ldx #<MINE_LOAD_ADDR 
+    ldy #>MINE_LOAD_ADDR
     jsr LOAD
     rts
 
