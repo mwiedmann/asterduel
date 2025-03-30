@@ -10,9 +10,6 @@ hc_overlap: .byte 0
 handle_collision:
     ldx #0
     stx hc_outer_entity_count
-    ldx #0
-    stx hc_inner_entity_count
-    jsr check_ship1_boundary
     ldx #1
     stx hc_inner_entity_count
     ldx #<entities ; entity 0
@@ -75,18 +72,6 @@ check_entities:
     lda (comp_entity2), y
     adc #0
     sta hc_comp_val2+1
-    jsr check_left_boundary ; check left boundary while we have adjusted x
-    lda #1
-    cmp boundary_collision
-    bne @continue_collision_check
-    jmp no_collision ; There was a boundary collision, move to next entity
-@continue_collision_check:
-    jsr check_right_boundary ; check left boundary while we have adjusted x
-    lda #1
-    cmp boundary_collision
-    bne @continue_collision_check2
-    jmp no_collision ; There was a boundary collision, move to next entity
-@continue_collision_check2:
     clc
     lda hc_comp_val2
     ldy #Entity::_coll_size
@@ -279,12 +264,19 @@ check_ship_1_drop_energy:
     lda ship_1_energy
     cmp #0
     beq @done ; no energy
-    lda hc_comp_val2+1
-    cmp #0
-    bne @done
-    lda hc_comp_val2
-    cmp #BASE_SHIP_1_ENERGY_DROP_X
-    bcs @reset_drop_count
+    ldy #Entity::_x+1
+    lda (active_entity), y
+    cmp #>(BASE_SHIP_1_ENERGY_DROP_X)
+    bcc @less_than_base1
+    beq @check_low_bit
+    bra @reset_drop_count
+@check_low_bit:
+    ldy #Entity::_x
+    lda (active_entity), y
+    cmp #<(BASE_SHIP_1_ENERGY_DROP_X)
+    bcc @less_than_base1
+    bra @reset_drop_count
+@less_than_base1:
     dec ship_1_drop_count
     lda ship_1_drop_count
     cmp #0
@@ -299,46 +291,23 @@ check_ship_1_drop_energy:
     sta ship_1_drop_count
     rts
 
-check_ship1_boundary:
-    ldx #<entities
-    stx comp_entity2
-    ldx #>entities
-    stx comp_entity2+1
-    ldy #Entity::_active
-    lda (comp_entity2), y
-    cmp #0
-    beq @done
-    clc
-    ldy #Entity::_pixel_x
-    lda (comp_entity2), y
-    ldy #Entity::_coll_adj
-    adc (comp_entity2), y ; pixel_x+coll_adj=x1
-    sta hc_comp_val2
-    ldy #Entity::_pixel_x+1
-    lda (comp_entity2), y
-    adc #0
-    sta hc_comp_val2+1
-    jsr check_right_boundary
-    jsr check_ship_1_drop_energy
-@done:
-    rts
-
 check_left_boundary:
-    lda #0
-    sta boundary_collision
+    stz boundary_collision
     ldy #Entity::_collision_id
-    lda (comp_entity2), y
+    lda (active_entity), y
     and #BOUNDARY_LEFT_COLLISION_MATRIX
     cmp #0
     beq @done
     ; can collide
-    lda hc_comp_val2+1
+    ldy #Entity::_x+1
+    lda (active_entity), y
     cmp #>(BOUNDARY_LEFT_X)
     bcc @less_than_left
     beq @check_low_bit
     rts ; was > so not beyond boundary
 @check_low_bit:
-    lda hc_comp_val2
+    ldy #Entity::_x
+    lda (active_entity), y
     cmp #<(BOUNDARY_LEFT_X)
     bcc @less_than_left
     rts
@@ -347,26 +316,26 @@ check_left_boundary:
     rts
 @done:
     ; Gem or other entity that can pass boundary
-    lda #0
-    sta boundary_collision
+    stz boundary_collision
     rts
 
 check_right_boundary:
-    lda #0
-    sta boundary_collision
+    stz boundary_collision
     ldy #Entity::_collision_id
-    lda (comp_entity2), y
+    lda (active_entity), y
     and #BOUNDARY_RIGHT_COLLISION_MATRIX
     cmp #0
     beq @done
     ; can collide
-    lda hc_comp_val2+1
+    ldy #Entity::_x+1
+    lda (active_entity), y
     cmp #>(BOUNDARY_RIGHT_X)
     beq @check_low_bit
     bcs @gt_right
     rts ; was > so not beyond boundary
 @check_low_bit:
-    lda hc_comp_val2
+    ldy #Entity::_x
+    lda (active_entity), y
     cmp #<(BOUNDARY_RIGHT_X)
     bcs @gt_right
     rts
@@ -375,8 +344,7 @@ check_right_boundary:
     rts
 @done:
     ; Gem or other entity that can pass boundary
-    lda #0
-    sta boundary_collision
+    stz boundary_collision
     rts
 
 
@@ -385,7 +353,7 @@ handle_boundary_collision:
     sta boundary_collision
     ; handle collision
     ldy #Entity::_type
-    lda (comp_entity2), y
+    lda (active_entity), y
     cmp #SHIP_1_TYPE
     bne @check_ship_2
     jsr destroy_ship_1
@@ -400,26 +368,41 @@ handle_boundary_collision:
 @check_laser:
     cmp #LASER_TYPE
     bne @check_astsml
-    jsr destroy_2
+    jsr inactivate_entity
     jsr create_explosion_active_entity
     rts
 @check_astsml:
     cmp #ASTSML_TYPE
     bne @check_astbig
-    jsr destroy_2
+    jsr inactivate_entity
     jsr create_explosion_active_entity
     rts
 @check_astbig:
     cmp #ASTBIG_TYPE
-    bne @check_astbig
-    jsr split_2
+    bne @check_mine_1
+    jsr split_active_entity
+    rts
+@check_mine_1:
+    cmp #MINE_1_TYPE
+    bne @check_mine_2
+    jsr inactivate_entity
+    jsr create_explosion_active_entity
+    ; TODO -Lower shield energy
+    rts
+@check_mine_2:
+    cmp #MINE_2_TYPE
+    bne @no_collision
+    jsr inactivate_entity
+    jsr create_explosion_active_entity
+    ; TODO -Lower shield energy
+    rts
+@no_collision:
     rts
 
 hcs_keep_going: .byte 0
 
 handle_collision_sprites:
-    lda #0
-    sta hcs_keep_going
+    stz hcs_keep_going
     ;jsr clear_amount_to_add ; Clear the scoring amount
     ldy #Entity::_type
     lda (comp_entity1), y
@@ -485,8 +468,10 @@ collision_ship:
     beq @ship_astbig
     cmp #GEM_TYPE
     beq @ship_gem
-    ; cmp #WARP_TYPE
-    ; beq @ship_warp
+    cmp #MINE_1_TYPE
+    beq @ship_mine_1
+    cmp #MINE_2_TYPE
+    beq @ship_mine_2
     rts
 ; @ship_enemy:
 ;     ; Both die
@@ -519,6 +504,12 @@ collision_ship:
 @ship_gem:
     jsr destroy_2
     jsr ship_energy ; increase ship energy count
+    rts
+@ship_mine_1:
+@ship_mine_2:
+    ; Destroy both
+    jsr destroy_ship
+    jsr create_explosion_active_entity
     rts
 ; @ship_warp:
 ;     lda #1
@@ -856,7 +847,15 @@ split_active_entity:
     lda #1
 @no_wrap_1:
     sta split_index_1
+    lda active_entity
+    sta hold
+    lda active_entity+1
+    sta hold+1
     jsr launch_astsml
+    lda hold
+    sta active_entity
+    lda hold+1
+    sta active_entity+1
     ; 2nd astsml, active_entity now the astsml that was just launched
     lda split_index_2
     sta astsml_ang_index
@@ -866,7 +865,15 @@ split_active_entity:
     lda #9
 @no_wrap_2:
     sta split_index_2
+    lda active_entity
+    sta hold
+    lda active_entity+1
+    sta hold+1
     jsr launch_astsml
+    lda hold
+    sta active_entity
+    lda hold+1
+    sta active_entity+1
 ;     ; 3rd astsml, active_entity now the astsml that was just launched
 ;     lda split_index_3
 ;     sta astsml_ang_index

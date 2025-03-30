@@ -24,8 +24,7 @@ create_laser1_sprites:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
-    lda #0
-    sta param1
+    stz param1
     jsr reset_active_entity
     lda #<SHIP_1_LASER_LOAD_ADDR ; Img addr
     ldy #Entity::_image_addr
@@ -83,8 +82,7 @@ create_laser2_sprites:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
-    lda #0
-    sta param1
+    stz param1
     jsr reset_active_entity
     lda #<SHIP_2_LASER_LOAD_ADDR ; Img addr
     ldy #Entity::_image_addr

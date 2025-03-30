@@ -18,7 +18,7 @@ check_ship_death:
     beq @respawn_ship
     rts
 @respawn_ship:
-    lda sp_entity_count
+    lda en_entity_count
     cmp #0
     bne @respawn_ship_2
     jsr create_ship_1
@@ -132,11 +132,11 @@ create_ship_2:
     lda #12
     ldy #Entity::_ang
     sta (active_entity), y
-    ; lda #<(-32)
-    ; ldy #Entity::_vel_x
-    ; sta (active_entity), y
-    ; lda #>(-32)
-    ; ldy #Entity::_vel_x+1
+    lda #<(-32)
+    ldy #Entity::_vel_x
+    sta (active_entity), y
+    lda #>(-32)
+    ldy #Entity::_vel_x+1
     sta (active_entity), y
     ; pass the sprite_num for the ship and create its sprite
     lda #SHIP_2_SPRITE_NUM

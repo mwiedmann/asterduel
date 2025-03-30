@@ -14,8 +14,7 @@ check_controls:
     sta thrustwait
     bra @check_rotation
 @thrust_ready:
-    lda #0
-    sta thrusting
+    stz thrusting
     lda joy_a
     bit #%1000 ; See if pushing up (thrust)
     bne @check_rotation ; Skip thrust and jump to check rotation

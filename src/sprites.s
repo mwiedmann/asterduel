@@ -83,8 +83,7 @@ create_sprite:
 us_skip_flip: .byte 0
 
 update_sprite:
-    lda #0
-    sta us_skip_flip
+    stz us_skip_flip
     lda param1
     ; cmp #SAFE_SPRITE_NUM_START ; don't show this sprite
     ; bne @continue

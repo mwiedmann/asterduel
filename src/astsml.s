@@ -24,8 +24,7 @@ next_astsml:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
-    lda #0
-    sta param1 ; Not visible
+    stz param1 ; Not visible
     jsr reset_active_entity
     clc
     lda sp_entity_count

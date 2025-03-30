@@ -29,8 +29,7 @@ next_mine_1:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
-    lda #0
-    sta param1 ; Not visible
+    stz param1 ; Not visible
     jsr reset_active_entity
     clc
     lda sp_entity_count
@@ -77,10 +76,10 @@ next_mine_1:
     lda #3
     ldy #Entity::_coll_adj
     sta (active_entity), y
-    lda #%00000000
+    lda #%01000000
     ldy #Entity::_collision_matrix
     sta (active_entity), y
-    lda #%00000000
+    lda #%00000010
     ldy #Entity::_collision_id
     sta (active_entity), y
     lda sp_num
@@ -132,8 +131,7 @@ next_mine_2:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
-    lda #0
-    sta param1 ; Not visible
+    stz param1 ; Not visible
     jsr reset_active_entity
     clc
     lda sp_entity_count
@@ -180,10 +178,10 @@ next_mine_2:
     lda #3
     ldy #Entity::_coll_adj
     sta (active_entity), y
-    lda #%00000000
+    lda #%10000000
     ldy #Entity::_collision_matrix
     sta (active_entity), y
-    lda #%00000000
+    lda #%00000001
     ldy #Entity::_collision_id
     sta (active_entity), y
     lda sp_num

@@ -14,8 +14,7 @@ wait_count:
     lda waitflag
     cmp #0
     beq @waiting
-    lda #0
-    sta waitflag
+    stz waitflag
     lda wc_temp
     sec
     sbc #1

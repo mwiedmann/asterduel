@@ -1,30 +1,35 @@
 .ifndef ENTITIES_S
 ENTITIES_S = 1
 
+en_offset: .word 0
+en_entity_count: .byte 0
+en_hold: .word 0
+
 process_entities:
+    jsr set_ship_1_as_active
+    jsr check_ship_1_drop_energy
     ldx #0
-    stx sp_entity_count
+    stx en_entity_count
     ldx #0
-    stx sp_offset
-    stx sp_offset+1
+    stx en_offset
+    stx en_offset+1
 @next_entity:
     jsr process_entity
     clc
-    lda sp_offset
+    lda en_offset
     adc #.sizeof(Entity)
-    sta sp_offset
-    lda sp_offset+1
+    sta en_offset
+    lda en_offset+1
     adc #0
-    sta sp_offset+1
-    inc sp_entity_count
-    lda sp_entity_count
+    sta en_offset+1
+    inc en_entity_count
+    lda en_entity_count
     cmp #ENTITY_COUNT
     bne @next_entity
     ldx accelwait
     cpx #ENTITY_ACCEL_TICKS
     bne @done
-    lda #0
-    sta accelwait
+    stz accelwait
 @done:
     rts
 
@@ -45,10 +50,10 @@ inactivate_entity:
 process_entity:
     clc
     lda #<entities
-    adc sp_offset
+    adc en_offset
     sta active_entity
     lda #>entities
-    adc sp_offset+1
+    adc en_offset+1
     sta active_entity+1
     ; see if entity needs to respawn
     ldy #Entity::_death_count
@@ -61,6 +66,18 @@ process_entity:
     lda (active_entity), y
     cmp #0
     beq @skip_entity ; Skip if not visible
+    jsr check_left_boundary ; check left boundary
+    lda #1
+    cmp boundary_collision
+    bne @continue_boundary_check
+    bra @skip_entity  ; There was a boundary collision, move to next entity
+@continue_boundary_check:
+    jsr check_right_boundary ; check left boundary
+    lda #1
+    cmp boundary_collision
+    bne @continue_process
+    bra @skip_entity  ; There was a boundary collision, move to next entity
+@continue_process:
     ldx accelwait
     cpx #ENTITY_ACCEL_TICKS ; We only thrust entities every few ticks (otherwise they take off SUPER fast)
     bne @skip_accel
@@ -82,7 +99,7 @@ process_entity:
     rts
 @skip_destroy:
     jsr move_entity
-    lda sp_entity_count
+    lda en_entity_count
     cmp #0
     bne @check1
     jsr scroll_lane
@@ -92,7 +109,7 @@ process_entity:
     sta scroll_lane1_x+1
     bra @skip_scroll
 @check1:
-    lda sp_entity_count
+    lda en_entity_count
     cmp #1
     bne @not_a_ship
     jsr scroll_lane
@@ -108,8 +125,7 @@ process_entity:
 @skip_scroll:
     ;jsr enemy_logic
     ;jsr mine_logic
-    lda #0
-    sta param1 ; make entity not visible if out of bounds
+    stz param1 ; make entity not visible if out of bounds
     ;jsr check_entity_bounds
     ldy #Entity::_sprite_num
     lda (active_entity), y
@@ -146,8 +162,7 @@ show_ghosts:
     sta flip_lane
     jsr ghost_sprite
 @ghost_done:
-    lda #0
-    sta flip_lane
+    stz flip_lane
     jsr ghost_sprite
     clc
     lda sp_offset
@@ -330,9 +345,8 @@ scroll_lane:
     cmp #<SHIP_MID
     bcs @greater_than_mid
 @less_than_mid:
-    lda #0
-    sta scrolltemp
-    sta scrolltemp+1
+    stz scrolltemp
+    stz scrolltemp+1
     bra @done
 @greater_than_mid:
     ; see if greater than max

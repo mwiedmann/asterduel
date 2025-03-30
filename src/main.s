@@ -1,5 +1,6 @@
 .zeropage
     active_entity: .res 2
+    ast_entity: .res 2
     active_exp: .res 2
     comp_entity1: .res 2
     comp_entity2: .res 2
@@ -104,9 +105,7 @@ start:
     cmp #0
     beq @skip_mines
     jsr launch_mine_1
-    lda #0
-    sta launch_ship_1_mine
+    stz launch_ship_1_mine
 @skip_mines:
-    lda #0
-    sta waitflag
+    stz waitflag
     bra @waiting

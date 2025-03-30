@@ -24,8 +24,7 @@ next_gem:
     lda #>entities
     adc sp_offset+1
     sta active_entity+1
-    lda #0
-    sta param1 ; Not visible
+    stz param1 ; Not visible
     jsr reset_active_entity
     lda us_img_addr ; Img addr
     ldy #Entity::_image_addr
