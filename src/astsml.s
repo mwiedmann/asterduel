@@ -196,9 +196,9 @@ found_free_astsml:
     phx
     pha
     lda astsml_entity
-    sta active_entity
+    sta acc_entity
     lda astsml_entity+1
-    sta active_entity+1
+    sta acc_entity+1
     jsr accel_entity
     pla
     plx

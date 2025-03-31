@@ -8,7 +8,7 @@
     comp_entity1: .res 2
     comp_entity2: .res 2
     param1: .res 2
-    hold: .res 2
+    acc_entity: .res 2
 
 .segment "STARTUP"
     jmp start

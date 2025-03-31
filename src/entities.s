@@ -65,7 +65,9 @@ process_entity:
     ldy #Entity::_active
     lda (active_entity), y
     cmp #0
-    beq @skip_entity ; Skip if not visible
+    bne @check_this_entity ; Skip if not visible
+    rts
+@check_this_entity:
     jsr check_left_boundary ; check left boundary
     lda #1
     cmp boundary_collision
@@ -85,6 +87,10 @@ process_entity:
     lda (active_entity), y
     cmp #0
     beq @skip_accel
+    lda active_entity
+    sta acc_entity
+    lda active_entity+1
+    sta acc_entity+1
     jsr accel_entity
 @skip_accel:
     ldy #Entity::_destroy_ticks ; See if entity is destroyed after some time

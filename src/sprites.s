@@ -364,30 +364,30 @@ reset_active_entity:
 
 accel_entity:
     ldy #Entity::_ang
-    lda (active_entity), y
+    lda (acc_entity), y
     clc
     rol ; Shift the ship ang (mult 2) because ship_vel_ang_x are .word
     tax ; We now have a 0-31 index based on 0-15 angle
     ; First increase the x velocity
     ldy #Entity::_vel_x
-    lda (active_entity), y
+    lda (acc_entity), y
     clc
     adc ship_vel_ang_x, x ; x thrust based on angle (lo byte)
-    sta (active_entity), y
+    sta (acc_entity), y
     ldy #Entity::_vel_x+1
-    lda (active_entity), y
+    lda (acc_entity), y
     adc ship_vel_ang_x+1, x ; x thrust based on angle (hi byte)
-    sta (active_entity), y
+    sta (acc_entity), y
     ; Second increase the y velocity
     ldy #Entity::_vel_y
-    lda (active_entity), y
+    lda (acc_entity), y
     clc
     adc ship_vel_ang_y, x ; y thrust based on angle (lo byte)
-    sta (active_entity), y
+    sta (acc_entity), y
     ldy #Entity::_vel_y+1
-    lda (active_entity), y
+    lda (acc_entity), y
     adc ship_vel_ang_y+1, x ; y thrust based on angle (hi byte)
-    sta (active_entity), y
+    sta (acc_entity), y
     rts
 
 .endif

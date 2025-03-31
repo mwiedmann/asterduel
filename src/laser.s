@@ -178,7 +178,21 @@ fire_laser_1:
     ldy #Entity::_active
     lda (laser_entity), y
     cmp #0
-    bne @skip_entity
+    beq @good_entity
+    ; try next entity
+    clc
+    lda laser_offset
+    adc #.sizeof(Entity)
+    sta laser_offset
+    lda laser_offset+1
+    adc #0
+    sta laser_offset+1
+    inc laser_entity_count
+    lda laser_entity_count
+    cmp #SHIP_1_LASER_COUNT
+    bne @next_entity
+    rts
+@good_entity:
     ;jsr sound_shoot
     ; Found a free laser
     ; Move it to the ship position and launch it!
@@ -218,25 +232,15 @@ fire_laser_1:
 @initial_accel:
     ; Accelerate the laser a few times to get it started moving
     phx
+    lda laser_entity
+    sta acc_entity
+    lda laser_entity+1
+    sta acc_entity+1
     jsr accel_entity
     plx
     inx
     cpx #5
     bne @initial_accel
-    bra @done
-@skip_entity:
-    clc
-    lda laser_offset
-    adc #.sizeof(Entity)
-    sta laser_offset
-    lda laser_offset+1
-    adc #0
-    sta laser_offset+1
-    inc laser_entity_count
-    lda laser_entity_count
-    cmp #SHIP_1_LASER_COUNT
-    bne @next_entity
-@done:
     ;jsr move_entity ; Move it once to get some distance from ship
     rts
 
@@ -276,6 +280,7 @@ fire_laser_2:
     lda laser_entity_count
     cmp #SHIP_2_LASER_COUNT
     bne @next_entity
+    rts
 @good_entity:
     ;jsr sound_shoot
     ; Found a free laser
@@ -317,9 +322,9 @@ fire_laser_2:
     ; Accelerate the laser a few times to get it started moving
     phx
     lda laser_entity
-    sta active_entity
+    sta acc_entity
     lda laser_entity+1
-    sta active_entity+1
+    sta acc_entity+1
     jsr accel_entity
     plx
     inx

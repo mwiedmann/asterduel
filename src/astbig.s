@@ -171,9 +171,9 @@ launch_astbig:
 @initial_accel:
     pha
     lda astbig_entity
-    sta active_entity
+    sta acc_entity
     lda astbig_entity+1
-    sta active_entity+1
+    sta acc_entity+1
     jsr accel_entity
     pla
     dec

@@ -813,15 +813,7 @@ split_2:
 split_active_entity:
     jsr create_explosion_active_entity
     jsr inactivate_entity
-    lda active_entity
-    sta hold
-    lda active_entity+1
-    sta hold+1
     jsr drop_gem_from_active_entity
-    lda hold
-    sta active_entity
-    lda hold+1
-    sta active_entity+1
     ldy #Entity::_x
     lda (active_entity), y
     sta astsml_x
@@ -847,15 +839,7 @@ split_active_entity:
     lda #1
 @no_wrap_1:
     sta split_index_1
-    lda active_entity
-    sta hold
-    lda active_entity+1
-    sta hold+1
     jsr launch_astsml
-    lda hold
-    sta active_entity
-    lda hold+1
-    sta active_entity+1
     ; 2nd astsml, active_entity now the astsml that was just launched
     lda split_index_2
     sta astsml_ang_index
@@ -865,15 +849,7 @@ split_active_entity:
     lda #9
 @no_wrap_2:
     sta split_index_2
-    lda active_entity
-    sta hold
-    lda active_entity+1
-    sta hold+1
     jsr launch_astsml
-    lda hold
-    sta active_entity
-    lda hold+1
-    sta active_entity+1
 ;     ; 3rd astsml, active_entity now the astsml that was just launched
 ;     lda split_index_3
 ;     sta astsml_ang_index
