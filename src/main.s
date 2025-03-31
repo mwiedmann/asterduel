@@ -1,6 +1,8 @@
 .zeropage
     active_entity: .res 2
-    ast_entity: .res 2
+    astbig_entity: .res 2
+    astsml_entity: .res 2
+    gem_entity: .res 2
     active_exp: .res 2
     comp_entity1: .res 2
     comp_entity2: .res 2

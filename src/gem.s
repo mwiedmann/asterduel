@@ -90,6 +90,8 @@ next_gem:
 
 dg_x: .word 0
 dg_y: .word 0
+gem_offset: .word 0
+gem_entity_count:.byte 0
 
 drop_gem_from_active_entity:
     ldy #Entity::_x
@@ -109,34 +111,34 @@ drop_gem_from_active_entity:
     adc #>(8<<5)
     sta dg_y+1
     ldx #0
-    stx sp_entity_count
+    stx gem_entity_count
     ldx #<(.sizeof(Entity)*GEM_ENTITY_NUM_START)
-    stx sp_offset
+    stx gem_offset
     ldx #>(.sizeof(Entity)*GEM_ENTITY_NUM_START)
-    stx sp_offset+1
+    stx gem_offset+1
 @next_entity:
     clc
     lda #<entities
-    adc sp_offset
-    sta active_entity
+    adc gem_offset
+    sta gem_entity
     lda #>entities
-    adc sp_offset+1
-    sta active_entity+1
+    adc gem_offset+1
+    sta gem_entity+1
     ldy #Entity::_active
-    lda (active_entity), y
+    lda (gem_entity), y
     cmp #0
     bne @skip_entity
     bra @found_free_gem
 @skip_entity:
     clc
-    lda sp_offset
+    lda gem_offset
     adc #.sizeof(Entity)
-    sta sp_offset
-    lda sp_offset+1
+    sta gem_offset
+    lda gem_offset+1
     adc #0
-    sta sp_offset+1
-    inc sp_entity_count
-    lda sp_entity_count
+    sta gem_offset+1
+    inc gem_entity_count
+    lda gem_entity_count
     cmp #GEM_COUNT
     bne @next_entity
     rts
@@ -144,21 +146,21 @@ drop_gem_from_active_entity:
     ; make it visible and config it
     lda #1
     ldy #Entity::_visible
-    sta (active_entity), y
+    sta (gem_entity), y
     ldy #Entity::_active
-    sta (active_entity), y
+    sta (gem_entity), y
     lda dg_x
     ldy #Entity::_x
-    sta (active_entity), y
+    sta (gem_entity), y
     lda dg_x+1
     ldy #Entity::_x+1
-    sta (active_entity), y
+    sta (gem_entity), y
     lda dg_y
     ldy #Entity::_y
-    sta (active_entity), y
+    sta (gem_entity), y
     lda dg_y+1
     ldy #Entity::_y+1
-    sta (active_entity), y
+    sta (gem_entity), y
     jsr set_gem_vel
 @done:
     rts
@@ -173,20 +175,20 @@ set_gem_vel:
     ldx gem_vel_idx
     lda gem_vel, x
     ldy #Entity::_vel_x 
-    sta (active_entity), y
+    sta (gem_entity), y
     inx
     lda gem_vel, x
     ldy #Entity::_vel_x+1
-    sta (active_entity), y
+    sta (gem_entity), y
     inx
     ; _vel_y
     lda gem_vel, x
     ldy #Entity::_vel_y
-    sta (active_entity), y
+    sta (gem_entity), y
     inx
     lda gem_vel, x
     ldy #Entity::_vel_y+1
-    sta (active_entity), y
+    sta (gem_entity), y
     inx
     cpx #16
     bne @done

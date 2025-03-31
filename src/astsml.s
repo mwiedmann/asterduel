@@ -111,38 +111,40 @@ next_astsml:
 astsml_ang_index: .byte 0
 astsml_x: .word 0
 astsml_y: .word 0
+astsml_offset: .word 0
+astsml_entity_count:.byte 0
 
 launch_astsml:
     ldx #0
-    stx sp_entity_count
+    stx astsml_entity_count
     ldx #<(.sizeof(Entity)*ASTSML_ENTITY_NUM_START)
-    stx sp_offset
+    stx astsml_offset
     ldx #>(.sizeof(Entity)*ASTSML_ENTITY_NUM_START)
-    stx sp_offset+1
+    stx astsml_offset+1
 @next_entity:
     clc
     lda #<entities
-    adc sp_offset
-    sta active_entity
+    adc astsml_offset
+    sta astsml_entity
     lda #>entities
-    adc sp_offset+1
-    sta active_entity+1
+    adc astsml_offset+1
+    sta astsml_entity+1
     ldy #Entity::_active
-    lda (active_entity), y
+    lda (astsml_entity), y
     cmp #0
     bne @skip_entity
     jsr found_free_astsml
     bra @done
 @skip_entity:
     clc
-    lda sp_offset
+    lda astsml_offset
     adc #.sizeof(Entity)
-    sta sp_offset
-    lda sp_offset+1
+    sta astsml_offset
+    lda astsml_offset+1
     adc #0
-    sta sp_offset+1
-    inc sp_entity_count
-    lda sp_entity_count
+    sta astsml_offset+1
+    inc astsml_entity_count
+    lda astsml_entity_count
     cmp #ASTSML_COUNT
     bne @next_entity
 @done:
@@ -158,41 +160,45 @@ found_free_astsml:
     ; Clear any existing velocity
     lda #0
     ldy #Entity::_vel_x
-    sta (active_entity), y
+    sta (astsml_entity), y
     ldy #Entity::_vel_x+1
-    sta (active_entity), y
+    sta (astsml_entity), y
     ldy #Entity::_vel_y
-    sta (active_entity), y
+    sta (astsml_entity), y
     ldy #Entity::_vel_y+1
-    sta (active_entity), y
+    sta (astsml_entity), y
     lda #1
     ldy #Entity::_active
-    sta (active_entity), y
+    sta (astsml_entity), y
     ldy #Entity::_visible
-    sta (active_entity), y
+    sta (astsml_entity), y
     lda astsml_x
     ldy #Entity::_x
-    sta (active_entity), y
+    sta (astsml_entity), y
     lda astsml_x+1
     ldy #Entity::_x+1
-    sta (active_entity), y
+    sta (astsml_entity), y
     lda astsml_y
     ldy #Entity::_y
-    sta (active_entity), y
+    sta (astsml_entity), y
     lda astsml_y+1
     ldy #Entity::_y+1
-    sta (active_entity), y
+    sta (astsml_entity), y
     ; Set its angle and accel once to get it going
     ; astsml_ang_index
     lda astsml_ang_index
     ldy #Entity::_ang
-    sta (active_entity), y
+    sta (astsml_entity), y
     ; Accelerate the astsml to get it started moving
     ldx astsml_accel_index
     jsr pick_accel_list
 @next_accel:
     phx
     pha
+    lda astsml_entity
+    sta active_entity
+    lda astsml_entity+1
+    sta active_entity+1
     jsr accel_entity
     pla
     plx

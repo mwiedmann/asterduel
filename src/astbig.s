@@ -122,6 +122,8 @@ next_astbig:
     rts
 
 launch_amount: .byte 0
+astbig_offset: .word 0
+astbig_entity_count:.byte 0
 
 launch_astbigs:
     lda #ASTBIG_COUNT ; might be over max
@@ -141,33 +143,37 @@ launch_big_accel_index: .byte 0
 
 launch_astbig:
     ldx #0
-    stx sp_entity_count
+    stx astbig_entity_count
     ldx #<(.sizeof(Entity)*ASTBIG_ENTITY_NUM_START)
-    stx sp_offset
+    stx astbig_offset
     ldx #>(.sizeof(Entity)*ASTBIG_ENTITY_NUM_START)
-    stx sp_offset+1
+    stx astbig_offset+1
 @next_entity:
     clc
     lda #<entities
-    adc sp_offset
-    sta active_entity
+    adc astbig_offset
+    sta astbig_entity
     lda #>entities
-    adc sp_offset+1
-    sta active_entity+1
+    adc astbig_offset+1
+    sta astbig_entity+1
     ldy #Entity::_active
-    lda (active_entity), y
+    lda (astbig_entity), y
     cmp #1
     beq @skip_entity
     ; Found a free astbig
     lda #1
     ldy #Entity::_visible
-    sta (active_entity), y
+    sta (astbig_entity), y
     ldy #Entity::_active
-    sta (active_entity), y
+    sta (astbig_entity), y
     ldx launch_big_accel_index ; Accelerate the astbig a few times to get it started moving
     lda astbig_accel, x
 @initial_accel:
     pha
+    lda astbig_entity
+    sta active_entity
+    lda astbig_entity+1
+    sta active_entity+1
     jsr accel_entity
     pla
     dec
@@ -176,14 +182,14 @@ launch_astbig:
     bra @initial_accel
 @skip_entity:
     clc
-    lda sp_offset
+    lda astbig_offset
     adc #.sizeof(Entity)
-    sta sp_offset
-    lda sp_offset+1
+    sta astbig_offset
+    lda astbig_offset+1
     adc #0
-    sta sp_offset+1
-    inc sp_entity_count
-    lda sp_entity_count
+    sta astbig_offset+1
+    inc astbig_entity_count
+    lda astbig_entity_count
     cmp #ASTBIG_COUNT
     bne @next_entity
 @done:
