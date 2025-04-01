@@ -107,9 +107,15 @@ start:
     jsr handle_collision
     lda launch_ship_1_mine
     cmp #0
-    beq @skip_mines
+    beq @skip_base1_mines
     jsr launch_mine_1
     stz launch_ship_1_mine
-@skip_mines:
+@skip_base1_mines:
+    lda launch_ship_2_mine
+    cmp #0
+    beq @skip_base2_mines
+    jsr launch_mine_2
+    stz launch_ship_2_mine
+@skip_base2_mines:
     stz waitflag
     bra @waiting

@@ -243,6 +243,13 @@ launch_mine_1:
     cmp #0
     bne @skip_entity
     jsr found_free_mine
+    ; ; Set its angle and vel
+    lda #4
+    ldy #Entity::_ang
+    sta (mine_entity), y
+    lda #192
+    ldy #Entity::_vel_x
+    sta (mine_entity), y
     bra @done
 @skip_entity:
     clc
@@ -259,6 +266,59 @@ launch_mine_1:
 @done:
     rts
 
+launch_mine_2:
+    lda #<(1800<<5)
+    sta mine_x
+    lda #>(1800<<5)
+    sta mine_x+1
+    lda #<(120<<5)
+    sta mine_y
+    lda #>(120<<5)
+    sta mine_y+1
+@mine_checks_done:
+    stx mine_entity_count
+    ldx #<(.sizeof(Entity)*MINE_2_ENTITY_NUM_START)
+    stx mine_offset
+    ldx #>(.sizeof(Entity)*MINE_2_ENTITY_NUM_START)
+    stx mine_offset+1
+@next_entity:
+    clc
+    lda #<entities
+    adc mine_offset
+    sta mine_entity
+    lda #>entities
+    adc mine_offset+1
+    sta mine_entity+1
+    ldy #Entity::_active
+    lda (mine_entity), y
+    cmp #0
+    bne @skip_entity
+    jsr found_free_mine
+    ; ; Set its angle and vel
+    lda #12
+    ldy #Entity::_ang
+    sta (mine_entity), y
+    lda #<(-192)
+    ldy #Entity::_vel_x
+    sta (mine_entity), y
+    lda #>(-192)
+    ldy #Entity::_vel_x+1
+    sta (mine_entity), y
+    bra @done
+@skip_entity:
+    clc
+    lda mine_offset
+    adc #.sizeof(Entity)
+    sta mine_offset
+    lda mine_offset+1
+    adc #0
+    sta mine_offset+1
+    inc mine_entity_count
+    lda mine_entity_count
+    cmp #MINE_2_COUNT
+    bne @next_entity
+@done:
+    rts
 
 found_free_mine:
     ; Clear any existing velocity
@@ -287,13 +347,6 @@ found_free_mine:
     sta (mine_entity), y
     lda mine_y+1
     ldy #Entity::_y+1
-    sta (mine_entity), y
-    ; ; Set its angle and vel
-    lda #4
-    ldy #Entity::_ang
-    sta (mine_entity), y
-    lda #192
-    ldy #Entity::_vel_x
     sta (mine_entity), y
     rts
 

@@ -2,7 +2,7 @@
 SHIP_S = 1
 
 ship_1_energy: .byte 2
-ship_2_energy: .byte 0
+ship_2_energy: .byte 2
 ship_1_drop_count: .byte BASE_ENERGY_COUNT
 ship_2_drop_count: .byte BASE_ENERGY_COUNT
 
@@ -132,10 +132,10 @@ create_ship_2:
     lda #12
     ldy #Entity::_ang
     sta (active_entity), y
-    lda #<(-32)
+    lda #<(32)
     ldy #Entity::_vel_x
     sta (active_entity), y
-    lda #>(-32)
+    lda #>(32)
     ldy #Entity::_vel_x+1
     sta (active_entity), y
     ; pass the sprite_num for the ship and create its sprite

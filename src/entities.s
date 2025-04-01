@@ -8,6 +8,8 @@ en_hold: .word 0
 process_entities:
     jsr set_ship_1_as_active
     jsr check_ship_1_drop_energy
+    jsr set_ship_2_as_active
+    jsr check_ship_2_drop_energy
     ldx #0
     stx en_entity_count
     ldx #0
@@ -465,9 +467,18 @@ move_entity:
     cmp #<LANE_X_BIG
     bcs @ship_ob
     bra @skip_ship_x_checks
-
 @check_ship_2:
-    ; TODO: Check ship 2 X OB
+    ; Check if X<0
+    ldy #Entity::_x+1 ; Point to _y hi bit
+    lda (active_entity), y
+    cmp #>LANE_X_BIG
+    bcc @skip_ship_x_checks
+    bne @ship_ob
+    ; check low bits
+    ldy #Entity::_x ; Point to _y lo bit
+    lda (active_entity), y
+    cmp #<LANE_X_BIG
+    bcs @ship_ob
     bra @skip_ship_x_checks
 @ship_ob:
     ; Put to last position

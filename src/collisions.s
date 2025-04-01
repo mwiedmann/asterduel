@@ -259,6 +259,7 @@ last_inner_entity:
 boundary_collision: .byte 0
 
 launch_ship_1_mine: .byte 0
+launch_ship_2_mine: .byte 0
 
 check_ship_1_drop_energy:
     lda ship_1_energy
@@ -289,6 +290,36 @@ check_ship_1_drop_energy:
 @reset_drop_count:
     lda #BASE_ENERGY_COUNT
     sta ship_1_drop_count
+    rts
+
+check_ship_2_drop_energy:
+    lda ship_2_energy
+    cmp #0
+    beq @done ; no energy
+    ldy #Entity::_x+1
+    lda (active_entity), y
+    cmp #>(BASE_SHIP_2_ENERGY_DROP_X)
+    bcc @reset_drop_count ; <
+    beq @check_low_bit
+    bra @greater_than_base2
+@check_low_bit:
+    ldy #Entity::_x
+    lda (active_entity), y
+    cmp #<(BASE_SHIP_2_ENERGY_DROP_X)
+    bcc @reset_drop_count ; < 
+@greater_than_base2:
+    dec ship_2_drop_count
+    lda ship_2_drop_count
+    cmp #0
+    bne @done
+    inc launch_ship_2_mine
+    dec ship_2_energy
+    bra @reset_drop_count
+@done:
+    rts
+@reset_drop_count:
+    lda #BASE_ENERGY_COUNT
+    sta ship_2_drop_count
     rts
 
 check_left_boundary:
