@@ -1,10 +1,12 @@
 .ifndef SHIP_S
 SHIP_S = 1
 
-ship_1_energy: .byte 2
+ship_1_energy: .byte 3
 ship_2_energy: .byte 2
 ship_1_drop_count: .byte BASE_ENERGY_COUNT
 ship_2_drop_count: .byte BASE_ENERGY_COUNT
+shield_1_energy: .byte 100
+shield_2_energy: .byte 100
 
 create_ships:
     jsr create_ship_1

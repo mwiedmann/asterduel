@@ -71,15 +71,15 @@ process_entity:
     rts
 @check_this_entity:
     jsr check_left_boundary ; check left boundary
-    lda #1
+    lda #0
     cmp boundary_collision
-    bne @continue_boundary_check
+    beq @continue_boundary_check
     bra @skip_entity  ; There was a boundary collision, move to next entity
 @continue_boundary_check:
     jsr check_right_boundary ; check left boundary
-    lda #1
+    lda #0
     cmp boundary_collision
-    bne @continue_process
+    beq @continue_process
     bra @skip_entity  ; There was a boundary collision, move to next entity
 @continue_process:
     ldx accelwait

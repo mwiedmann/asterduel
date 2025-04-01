@@ -323,6 +323,9 @@ check_ship_2_drop_energy:
     rts
 
 check_left_boundary:
+    lda shield_1_energy
+    cmp #0
+    beq @done
     stz boundary_collision
     ldy #Entity::_collision_id
     lda (active_entity), y
@@ -344,13 +347,23 @@ check_left_boundary:
     rts
 @less_than_left:
     jsr handle_boundary_collision
+    lda shield_1_energy
+    sec
+    sbc boundary_collision
+    bcc @shield_dead
+    sta shield_1_energy
+    rts
+@shield_dead:
+    stz shield_1_energy
     rts
 @done:
-    ; Gem or other entity that can pass boundary
     stz boundary_collision
     rts
 
 check_right_boundary:
+    lda shield_2_energy
+    cmp #0
+    beq @done
     stz boundary_collision
     ldy #Entity::_collision_id
     lda (active_entity), y
@@ -372,16 +385,21 @@ check_right_boundary:
     rts
 @gt_right:
     jsr handle_boundary_collision
+    lda shield_2_energy
+    sec
+    sbc boundary_collision
+    bcc @shield_dead
+    sta shield_2_energy
+    rts
+@shield_dead:
+    stz shield_2_energy
     rts
 @done:
-    ; Gem or other entity that can pass boundary
     stz boundary_collision
     rts
 
 
 handle_boundary_collision:
-    lda #1
-    sta boundary_collision
     ; handle collision
     ldy #Entity::_type
     lda (active_entity), y
@@ -389,45 +407,58 @@ handle_boundary_collision:
     bne @check_ship_2
     jsr destroy_ship_1
     jsr create_explosion_active_entity
+    lda #SHIELD_DAMAGE_SHIP
+    sta boundary_collision
     rts
 @check_ship_2:
     cmp #SHIP_2_TYPE
     bne @check_laser
     jsr destroy_ship_2
     jsr create_explosion_active_entity
+    lda #SHIELD_DAMAGE_SHIP
+    sta boundary_collision
     rts
 @check_laser:
     cmp #LASER_TYPE
     bne @check_astsml
     jsr inactivate_entity
     jsr create_explosion_active_entity
+    lda #SHIELD_DAMAGE_LASER
+    sta boundary_collision
     rts
 @check_astsml:
     cmp #ASTSML_TYPE
     bne @check_astbig
     jsr inactivate_entity
     jsr create_explosion_active_entity
+    lda #SHIELD_DAMAGE_ASTSML
+    sta boundary_collision
     rts
 @check_astbig:
     cmp #ASTBIG_TYPE
     bne @check_mine_1
     jsr split_active_entity
+    lda #SHIELD_DAMAGE_ASTBIG
+    sta boundary_collision
     rts
 @check_mine_1:
     cmp #MINE_1_TYPE
     bne @check_mine_2
     jsr inactivate_entity
     jsr create_explosion_active_entity
-    ; TODO -Lower shield energy
+    lda #SHIELD_DAMAGE_MINE
+    sta boundary_collision
     rts
 @check_mine_2:
     cmp #MINE_2_TYPE
     bne @no_collision
     jsr inactivate_entity
     jsr create_explosion_active_entity
-    ; TODO -Lower shield energy
+    lda #SHIELD_DAMAGE_MINE
+    sta boundary_collision
     rts
 @no_collision:
+    stz boundary_collision
     rts
 
 hcs_keep_going: .byte 0
