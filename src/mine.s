@@ -212,6 +212,8 @@ next_mine_2:
 
 mine_x: .word 32
 mine_y: .word 32
+mine_offset: .word 0
+mine_entity_count:.byte 0
 
 launch_mine_1:
     lda #<(200<<5)
@@ -223,35 +225,35 @@ launch_mine_1:
     lda #>(120<<5)
     sta mine_y+1
 @mine_checks_done:
-    stx sp_entity_count
+    stx mine_entity_count
     ldx #<(.sizeof(Entity)*MINE_1_ENTITY_NUM_START)
-    stx sp_offset
+    stx mine_offset
     ldx #>(.sizeof(Entity)*MINE_1_ENTITY_NUM_START)
-    stx sp_offset+1
+    stx mine_offset+1
 @next_entity:
     clc
     lda #<entities
-    adc sp_offset
-    sta active_entity
+    adc mine_offset
+    sta mine_entity
     lda #>entities
-    adc sp_offset+1
-    sta active_entity+1
+    adc mine_offset+1
+    sta mine_entity+1
     ldy #Entity::_active
-    lda (active_entity), y
+    lda (mine_entity), y
     cmp #0
     bne @skip_entity
     jsr found_free_mine
     bra @done
 @skip_entity:
     clc
-    lda sp_offset
+    lda mine_offset
     adc #.sizeof(Entity)
-    sta sp_offset
-    lda sp_offset+1
+    sta mine_offset
+    lda mine_offset+1
     adc #0
-    sta sp_offset+1
-    inc sp_entity_count
-    lda sp_entity_count
+    sta mine_offset+1
+    inc mine_entity_count
+    lda mine_entity_count
     cmp #MINE_1_COUNT
     bne @next_entity
 @done:
@@ -262,37 +264,37 @@ found_free_mine:
     ; Clear any existing velocity
     lda #0
     ldy #Entity::_vel_x
-    sta (active_entity), y
+    sta (mine_entity), y
     ldy #Entity::_vel_x+1
-    sta (active_entity), y
+    sta (mine_entity), y
     ldy #Entity::_vel_y
-    sta (active_entity), y
+    sta (mine_entity), y
     ldy #Entity::_vel_y+1
-    sta (active_entity), y
+    sta (mine_entity), y
     lda #1
     ldy #Entity::_visible
-    sta (active_entity), y
+    sta (mine_entity), y
     ldy #Entity::_active
-    sta (active_entity), y
+    sta (mine_entity), y
     lda mine_x
     ldy #Entity::_x
-    sta (active_entity), y
+    sta (mine_entity), y
     lda mine_x+1
     ldy #Entity::_x+1
-    sta (active_entity), y
+    sta (mine_entity), y
     lda mine_y
     ldy #Entity::_y
-    sta (active_entity), y
+    sta (mine_entity), y
     lda mine_y+1
     ldy #Entity::_y+1
-    sta (active_entity), y
-    ; ; Set its angle and accel once to get it going
+    sta (mine_entity), y
+    ; ; Set its angle and vel
     lda #4
     ldy #Entity::_ang
-    sta (active_entity), y
+    sta (mine_entity), y
     lda #192
     ldy #Entity::_vel_x
-    sta (active_entity), y
+    sta (mine_entity), y
     rts
 
 .endif
