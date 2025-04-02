@@ -398,6 +398,81 @@ check_right_boundary:
     stz boundary_collision
     rts
 
+check_left_base:
+    lda shield_1_energy
+    cmp #0
+    bne @done ; can't hit base if shield is up
+    stz boundary_collision
+    ldy #Entity::_collision_id
+    lda (active_entity), y
+    and #BOUNDARY_LEFT_COLLISION_MATRIX
+    cmp #0
+    beq @done
+    ; can collide
+    ldy #Entity::_x+1
+    lda (active_entity), y
+    cmp #>(BASE_SHIP_1_ENERGY_DROP_X)
+    bcc @less_than_left
+    beq @check_low_bit
+    rts ; was > so not beyond boundary
+@check_low_bit:
+    ldy #Entity::_x
+    lda (active_entity), y
+    cmp #<(BASE_SHIP_1_ENERGY_DROP_X)
+    bcc @less_than_left
+    rts
+@less_than_left:
+    jsr handle_boundary_collision
+    lda base_1_energy
+    sec
+    sbc boundary_collision
+    bcc @shield_dead
+    sta base_1_energy
+    rts
+@shield_dead:
+    stz base_1_energy
+    rts
+@done:
+    stz boundary_collision
+    rts
+
+check_right_base:
+    lda shield_2_energy
+    cmp #0
+    bne @done ; can't hit base if shield is up
+    stz boundary_collision
+    ldy #Entity::_collision_id
+    lda (active_entity), y
+    and #BOUNDARY_RIGHT_COLLISION_MATRIX
+    cmp #0
+    beq @done
+    ; can collide
+    ldy #Entity::_x+1
+    lda (active_entity), y
+    cmp #>(BASE_SHIP_2_ENERGY_DROP_X)
+    beq @check_low_bit
+    bcs @gt_right
+    rts ; was > so not beyond boundary
+@check_low_bit:
+    ldy #Entity::_x
+    lda (active_entity), y
+    cmp #<(BASE_SHIP_2_ENERGY_DROP_X)
+    bcs @gt_right
+    rts
+@gt_right:
+    jsr handle_boundary_collision
+    lda base_2_energy
+    sec
+    sbc boundary_collision
+    bcc @shield_dead
+    sta base_2_energy
+    rts
+@shield_dead:
+    stz base_2_energy
+    rts
+@done:
+    stz boundary_collision
+    rts
 
 handle_boundary_collision:
     ; handle collision

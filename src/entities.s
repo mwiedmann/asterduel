@@ -74,13 +74,26 @@ process_entity:
     lda #0
     cmp boundary_collision
     beq @continue_boundary_check
-    bra @skip_entity  ; There was a boundary collision, move to next entity
+    rts  ; There was a boundary collision, move to next entity
 @continue_boundary_check:
     jsr check_right_boundary ; check left boundary
     lda #0
     cmp boundary_collision
+    beq @check_bases
+    rts  ; There was a boundary collision, move to next entity
+@check_bases:
+    ; check base collisions
+    jsr check_left_base ; check left boundary
+    lda #0
+    cmp boundary_collision
+    beq @continue_base_check
+    rts  ; There was a boundary collision, move to next entity
+@continue_base_check:
+    jsr check_right_base ; check left boundary
+    lda #0
+    cmp boundary_collision
     beq @continue_process
-    bra @skip_entity  ; There was a boundary collision, move to next entity
+    rts  ; There was a boundary collision, move to next entity
 @continue_process:
     ldx accelwait
     cpx #ENTITY_ACCEL_TICKS ; We only thrust entities every few ticks (otherwise they take off SUPER fast)
@@ -131,24 +144,13 @@ process_entity:
     ; The rest we only wanted to move
     rts
 @skip_scroll:
-    ;jsr enemy_logic
-    ;jsr mine_logic
     stz param1 ; make entity not visible if out of bounds
-    ;jsr check_entity_bounds
     ldy #Entity::_sprite_num
     lda (active_entity), y
     sta param1
     jsr update_sprite
-@skip_entity:
-    ; See if enemy firing should reset
-    ;lda enemywait
-    ;cmp #ENEMY_SHOOT_TIME
-    ;bne @skip_enemywait_reset
-    ;lda #0
-    ;sta enemywait
     rts
 @skip_enemywait_reset:
-    ;inc enemywait
     rts
 
 ghost_x: .word 0

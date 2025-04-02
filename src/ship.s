@@ -1,12 +1,14 @@
 .ifndef SHIP_S
 SHIP_S = 1
 
-ship_1_energy: .byte 3
+ship_1_energy: .byte 4
 ship_2_energy: .byte 2
 ship_1_drop_count: .byte BASE_ENERGY_COUNT
 ship_2_drop_count: .byte BASE_ENERGY_COUNT
 shield_1_energy: .byte 100
-shield_2_energy: .byte 100
+shield_2_energy: .byte 25
+base_1_energy: .byte 100
+base_2_energy: .byte 25
 
 create_ships:
     jsr create_ship_1
@@ -134,10 +136,10 @@ create_ship_2:
     lda #12
     ldy #Entity::_ang
     sta (active_entity), y
-    lda #<(32)
+    lda #<(0)
     ldy #Entity::_vel_x
     sta (active_entity), y
-    lda #>(32)
+    lda #>(0)
     ldy #Entity::_vel_x+1
     sta (active_entity), y
     ; pass the sprite_num for the ship and create its sprite
