@@ -8,8 +8,7 @@ create_laser_sprites:
     rts
 
 create_laser1_sprites:
-    ldx #0
-    stx sp_entity_count
+    stz sp_entity_count
     ldx #SHIP_1_LASER_SPRITE_NUM_START
     stx sp_num
     ldx #<(.sizeof(Entity)*SHIP_1_LASER_ENTITY_NUM_START)
@@ -66,8 +65,7 @@ create_laser1_sprites:
     rts
 
 create_laser2_sprites:
-    ldx #0
-    stx sp_entity_count
+    stz sp_entity_count
     ldx #SHIP_2_LASER_SPRITE_NUM_START
     stx sp_num
     ldx #<(.sizeof(Entity)*SHIP_2_LASER_ENTITY_NUM_START)
@@ -161,8 +159,7 @@ fire_laser_1:
     beq @ship_active
     rts
 @ship_active:
-    ldx #0
-    stx laser_entity_count
+    stz laser_entity_count
     ldx #<(.sizeof(Entity)*SHIP_1_LASER_ENTITY_NUM_START)
     stx laser_offset
     ldx #>(.sizeof(Entity)*SHIP_1_LASER_ENTITY_NUM_START)
@@ -250,8 +247,7 @@ fire_laser_2:
     beq @ship_active
     rts
 @ship_active:
-    ldx #0
-    stx laser_entity_count
+    stz laser_entity_count
     ldx #<(.sizeof(Entity)*SHIP_2_LASER_ENTITY_NUM_START)
     stx laser_offset
     ldx #>(.sizeof(Entity)*SHIP_2_LASER_ENTITY_NUM_START)

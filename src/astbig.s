@@ -12,8 +12,7 @@ create_astbig_sprites:
     sta us_img_addr+1
     lda #<(ASTBIG_LOAD_ADDR>>16)
     sta us_img_addr+2
-    ldx #0
-    stx sp_entity_count
+    stz sp_entity_count
     ldx #ASTBIG_SPRITE_NUM_START
     stx sp_num
     ldx #<(.sizeof(Entity)*ASTBIG_ENTITY_NUM_START)
@@ -142,8 +141,7 @@ launch_astbigs:
 launch_big_accel_index: .byte 0
 
 launch_astbig:
-    ldx #0
-    stx astbig_entity_count
+    stz astbig_entity_count
     ldx #<(.sizeof(Entity)*ASTBIG_ENTITY_NUM_START)
     stx astbig_offset
     ldx #>(.sizeof(Entity)*ASTBIG_ENTITY_NUM_START)

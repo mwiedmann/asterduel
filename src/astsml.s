@@ -8,8 +8,7 @@ create_astsml_sprites:
     sta us_img_addr+1
     lda #<(ASTSML_LOAD_ADDR>>16)
     sta us_img_addr+2
-    ldx #0
-    stx sp_entity_count
+    stz sp_entity_count
     ldx #ASTSML_SPRITE_NUM_START
     stx sp_num
     ldx #<(.sizeof(Entity)*ASTSML_ENTITY_NUM_START)
@@ -115,8 +114,7 @@ astsml_offset: .word 0
 astsml_entity_count:.byte 0
 
 launch_astsml:
-    ldx #0
-    stx astsml_entity_count
+    stz astsml_entity_count
     ldx #<(.sizeof(Entity)*ASTSML_ENTITY_NUM_START)
     stx astsml_offset
     ldx #>(.sizeof(Entity)*ASTSML_ENTITY_NUM_START)

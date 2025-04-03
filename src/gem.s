@@ -8,8 +8,7 @@ create_gem_sprites:
     sta us_img_addr+1
     lda #<(GEM_LOAD_ADDR>>16)
     sta us_img_addr+2
-    ldx #0
-    stx sp_entity_count
+    stz sp_entity_count
     ldx #GEM_SPRITE_NUM_START
     stx sp_num
     ldx #<(.sizeof(Entity)*GEM_ENTITY_NUM_START)
@@ -110,8 +109,7 @@ drop_gem_from_active_entity:
     clc
     adc #>(8<<5)
     sta dg_y+1
-    ldx #0
-    stx gem_entity_count
+    stz gem_entity_count
     ldx #<(.sizeof(Entity)*GEM_ENTITY_NUM_START)
     stx gem_offset
     ldx #>(.sizeof(Entity)*GEM_ENTITY_NUM_START)

@@ -8,8 +8,7 @@ hc_comp_val2: .word 0
 hc_overlap: .byte 0
 
 handle_collision:
-    ldx #0
-    stx hc_outer_entity_count
+    stz hc_outer_entity_count
     ldx #1
     stx hc_inner_entity_count
     ldx #<entities ; entity 0

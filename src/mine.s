@@ -1,6 +1,12 @@
 .ifndef MINE_S
 MINE_S = 1
 
+mine_y_pos: .word ((4*16)<<5), ((5*16)<<5), ((7*16)<<5), ((8*16)<<5), ((10*16)<<5), ((11*16)<<5)
+mine_1_x_pos: .word (((3*16)-8)<<5), (((3*16)-8)<<5), (((5*16)-8)<<5), (((5*16)-8)<<5), (((3*16)-8)<<5), (((3*16)-8)<<5)
+mine_1_offset: .byte 0
+mine_2_x_pos: .word (1992<<5), (1992<<5), ((1992-32)<<5), ((1992-32)<<5), (1992<<5), (1992<<5)
+mine_2_offset: .byte 0
+
 create_mine_sprites:
     jsr create_mine_1_sprites
     jsr create_mine_2_sprites
@@ -13,8 +19,7 @@ create_mine_1_sprites:
     sta us_img_addr+1
     lda #<(MINE_1_LOAD_ADDR>>16)
     sta us_img_addr+2
-    ldx #0
-    stx sp_entity_count
+    stz sp_entity_count
     ldx #MINE_1_SPRITE_NUM_START
     stx sp_num
     ldx #<(.sizeof(Entity)*MINE_1_ENTITY_NUM_START)
@@ -115,8 +120,7 @@ create_mine_2_sprites:
     sta us_img_addr+1
     lda #<(MINE_2_LOAD_ADDR>>16)
     sta us_img_addr+2
-    ldx #0
-    stx sp_entity_count
+    stz sp_entity_count
     ldx #MINE_2_SPRITE_NUM_START
     stx sp_num
     ldx #<(.sizeof(Entity)*MINE_2_ENTITY_NUM_START)
@@ -216,16 +220,17 @@ mine_offset: .word 0
 mine_entity_count:.byte 0
 
 launch_mine_1:
-    lda #<(200<<5)
+    ldx mine_1_offset
+    lda mine_1_x_pos, x
     sta mine_x
-    lda #>(200<<5)
+    lda mine_1_x_pos+1, x
     sta mine_x+1
-    lda #<(120<<5)
+    lda mine_y_pos, x
     sta mine_y
-    lda #>(120<<5)
+    lda mine_y_pos+1, x
     sta mine_y+1
 @mine_checks_done:
-    stx mine_entity_count
+    stz mine_entity_count
     ldx #<(.sizeof(Entity)*MINE_1_ENTITY_NUM_START)
     stx mine_offset
     ldx #>(.sizeof(Entity)*MINE_1_ENTITY_NUM_START)
@@ -244,10 +249,18 @@ launch_mine_1:
     bne @skip_entity
     jsr found_free_mine
     ; ; Set its angle and vel
-    lda #4
-    ldy #Entity::_ang
-    sta (mine_entity), y
-    lda #192
+    lda mine_1_offset
+    inc
+    inc
+    cmp #12
+    bne @save_offset
+    lda #0
+@save_offset:
+    sta mine_1_offset
+    ; lda #4
+    ; ldy #Entity::_ang
+    ; sta (mine_entity), y
+    lda #255
     ldy #Entity::_vel_x
     sta (mine_entity), y
     bra @done
@@ -267,16 +280,17 @@ launch_mine_1:
     rts
 
 launch_mine_2:
-    lda #<(1800<<5)
+    ldx mine_2_offset
+    lda mine_2_x_pos, x
     sta mine_x
-    lda #>(1800<<5)
+    lda mine_2_x_pos+1, x
     sta mine_x+1
-    lda #<(120<<5)
+    lda mine_y_pos, x
     sta mine_y
-    lda #>(120<<5)
+    lda mine_y_pos+1, x
     sta mine_y+1
 @mine_checks_done:
-    stx mine_entity_count
+    stz mine_entity_count
     ldx #<(.sizeof(Entity)*MINE_2_ENTITY_NUM_START)
     stx mine_offset
     ldx #>(.sizeof(Entity)*MINE_2_ENTITY_NUM_START)
@@ -294,10 +308,14 @@ launch_mine_2:
     cmp #0
     bne @skip_entity
     jsr found_free_mine
-    ; ; Set its angle and vel
-    lda #12
-    ldy #Entity::_ang
-    sta (mine_entity), y
+    lda mine_2_offset
+    inc
+    inc
+    cmp #12
+    bne @save_offset
+    lda #0
+@save_offset:
+    sta mine_2_offset
     lda #<(-192)
     ldy #Entity::_vel_x
     sta (mine_entity), y

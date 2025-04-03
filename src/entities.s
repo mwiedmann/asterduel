@@ -10,11 +10,9 @@ process_entities:
     jsr check_ship_1_drop_energy
     jsr set_ship_2_as_active
     jsr check_ship_2_drop_energy
-    ldx #0
-    stx en_entity_count
-    ldx #0
-    stx en_offset
-    stx en_offset+1
+    stz en_entity_count
+    stz en_offset
+    stz en_offset+1
 @next_entity:
     jsr process_entity
     clc
@@ -157,11 +155,9 @@ ghost_x: .word 0
 ghost_y: .word 0
 
 show_ghosts:
-    ldx #0
-    stx sp_entity_count
-    ldx #0
-    stx sp_offset
-    stx sp_offset+1
+    stz sp_entity_count
+    stz sp_offset
+    stz sp_offset+1
 @next_entity:
     lda sp_entity_count
     cmp #2
