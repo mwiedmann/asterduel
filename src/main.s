@@ -100,6 +100,7 @@ start:
     lda waitflag
     cmp #0
     beq @waiting
+    jsr relaunch_astbig
     jsr check_controls
     jsr process_entities
     jsr update_oneshots

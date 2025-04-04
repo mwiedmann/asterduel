@@ -33,27 +33,6 @@ next_astbig:
     lda sp_entity_count ; Use this to get an index into astbig_start_?
     rol
     tax
-    lda astbig_start_x, x
-    ldy #Entity::_x
-    sta (active_entity), y
-    lda astbig_start_x+1, x
-    ldy #Entity::_x+1
-    sta (active_entity), y
-    lda #0
-    ldy #Entity::_lane
-    sta (active_entity), y
-    ;lda astbig_start_y, x
-    lda #<(120<<5)
-    ldy #Entity::_y
-    sta (active_entity), y
-    ;lda astbig_start_y+1, x
-    lda #>(120<<5)
-    ldy #Entity::_y+1
-    sta (active_entity), y
-    lda astbig_start_ang, x
-    ;lda #3
-    ldy #Entity::_ang
-    sta (active_entity), y
     jsr move_entity ; Update the pixel positions
     lda us_img_addr ; Img addr
     ldy #Entity::_image_addr
@@ -125,6 +104,7 @@ astbig_offset: .word 0
 astbig_entity_count:.byte 0
 
 launch_astbigs:
+    stz launch_big_accel_skip
     lda #ASTBIG_COUNT ; might be over max
     sta launch_amount
     ldx #0
@@ -138,7 +118,34 @@ launch_astbigs:
     bne @next_astbig
     rts
 
+relaunch_counter: .word 0
+
+relaunch_astbig:
+    lda relaunch_counter
+    cmp #<ASTBIG_RELAUNCH_COUNT
+    bne @no_relaunch
+    lda relaunch_counter+1
+    cmp #>ASTBIG_RELAUNCH_COUNT
+    bne @no_relaunch
+    stz relaunch_counter
+    stz relaunch_counter+1
+    ldx #0
+    stx launch_big_accel_index
+    lda #1
+    sta launch_big_accel_skip
+    jsr launch_astbig
+@no_relaunch:
+    clc
+    lda relaunch_counter
+    adc #1
+    sta relaunch_counter
+    lda relaunch_counter+1
+    adc #0
+    sta relaunch_counter+1
+    rts
+
 launch_big_accel_index: .byte 0
+launch_big_accel_skip: .byte 0
 
 launch_astbig:
     stz astbig_entity_count
@@ -164,6 +171,14 @@ launch_astbig:
     sta (astbig_entity), y
     ldy #Entity::_active
     sta (astbig_entity), y
+    clc
+    lda astbig_entity_count ; Use this to get an index into astbig_start_?
+    rol
+    tax
+    jsr astbig_set_start
+    lda launch_big_accel_skip
+    cmp #1
+    beq @done
     ldx launch_big_accel_index ; Accelerate the astbig a few times to get it started moving
     lda astbig_accel, x
 @initial_accel:
@@ -191,6 +206,27 @@ launch_astbig:
     cmp #ASTBIG_COUNT
     bne @next_entity
 @done:
+    rts
+
+astbig_set_start:
+    lda astbig_start_x, x
+    ldy #Entity::_x
+    sta (astbig_entity), y
+    lda astbig_start_x+1, x
+    ldy #Entity::_x+1
+    sta (astbig_entity), y
+    lda #0
+    ldy #Entity::_lane
+    sta (astbig_entity), y
+    lda #<(LANE_BOTTOM_Y)
+    ldy #Entity::_y
+    sta (astbig_entity), y
+    lda #>(LANE_BOTTOM_Y)
+    ldy #Entity::_y+1
+    sta (astbig_entity), y
+    lda astbig_start_ang, x
+    ldy #Entity::_ang
+    sta (astbig_entity), y
     rts
 
 .endif
