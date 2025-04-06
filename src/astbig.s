@@ -102,9 +102,11 @@ next_astbig:
 launch_amount: .byte 0
 astbig_offset: .word 0
 astbig_entity_count:.byte 0
+astbig_index: .byte 0
 
 launch_astbigs:
     stz launch_big_accel_skip
+    stz astbig_index
     lda #ASTBIG_COUNT ; might be over max
     sta launch_amount
     ldx #0
@@ -112,10 +114,12 @@ launch_astbigs:
     stx launch_big_accel_index
     phx
     jsr launch_astbig
+    inc astbig_index
     plx
     inx
     cpx launch_amount
     bne @next_astbig
+    stz astbig_index
     rts
 
 relaunch_counter: .word 0
@@ -134,6 +138,11 @@ relaunch_astbig:
     lda #1
     sta launch_big_accel_skip
     jsr launch_astbig
+    inc astbig_index
+    lda astbig_index
+    cmp #ASTBIG_COUNT
+    bne @no_relaunch
+    stz astbig_index
 @no_relaunch:
     clc
     lda relaunch_counter
@@ -172,7 +181,7 @@ launch_astbig:
     ldy #Entity::_active
     sta (astbig_entity), y
     clc
-    lda astbig_entity_count ; Use this to get an index into astbig_start_?
+    lda astbig_index ; Use this to get an index into astbig_start_?
     rol
     tax
     jsr astbig_set_start
