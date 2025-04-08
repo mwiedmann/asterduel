@@ -100,6 +100,7 @@ start:
     lda waitflag
     cmp #0
     beq @waiting
+    jsr check_shields_and_bases
     jsr relaunch_astbig
     jsr check_controls
     jsr process_entities

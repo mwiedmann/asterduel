@@ -228,4 +228,58 @@ normal_ship_img:
     sta us_img_addr+2
     rts
 
+shield_1_cleared: .byte 0
+shield_2_cleared: .byte 0
+
+check_shields_and_bases:
+    lda shield_1_cleared
+    cmp #1
+    beq @check_shield_2
+    lda shield_1_energy
+    cmp #0
+    bne @check_shield_2
+    ; shield 1 down
+    jsr clear_shield_1
+@check_shield_2:
+    lda shield_2_cleared
+    cmp #1
+    beq @check_base_1
+    lda shield_2_energy
+    cmp #0
+    bne @check_base_1
+    ; shield 2 down
+    jsr clear_shield_2
+@check_base_1:
+    lda base_1_energy
+    cmp #0
+    bne @check_base_2
+    jsr ship_2_wins
+@check_base_2:
+    lda base_2_energy
+    cmp #0
+    bne @done
+    jsr ship_1_wins
+@done:
+    rts
+
+clear_shield_1:
+    lda #1
+    sta shield_1_cleared
+    rts
+
+clear_shield_2:
+    lda #1
+    sta shield_2_cleared
+    rts
+
+ship_1_wins:
+    ; TODO: End game screen
+    ; inf loop for now
+    jmp ship_1_wins
+
+ship_2_wins:
+    ; TODO: End game screen
+    ; inf loop for now
+    jmp ship_2_wins
+
 .endif
