@@ -8,8 +8,8 @@ let lastHit=false
 const shipYStart= 5
 const ship2XStart=127
 const ship2TileOffset=21
-const leftBarrierTile=25
-const rightBarrierTile=ship2TileOffset+25
+const leftBarrierTile=47
+const rightBarrierTile=48
 
 const checkBase1 = (stars,x,y) => {
     if (x===0 && y===shipYStart+1) {

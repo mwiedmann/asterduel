@@ -5,20 +5,22 @@ const outputFile = process.argv[3];
 
 const frameWidth = process.argv[4];
 const frameHeight = process.argv[5];
-const frameCountWidth = process.argv[6];
+const frameCountWidth = process.argv[6]; // how many frames per row in image for this frame size
 const startingTile = process.argv[7];
 const xTiles = process.argv[8];
 const yTiles = process.argv[9];
-
+const tileCount = process.argv[10] || xTiles * yTiles;
+console.log('tileCount',tileCount)
 const imageData = [...fs.readFileSync(inputFile)].slice(startingTile * frameWidth * frameHeight);
 
 const flattenedTiles = [];
 
 let ty, tx, y, x, start, pixelIdx;
+let tilesDone=0
 
-for (ty = 0; ty < yTiles; ty++) {
-  for (tx = 0; tx < xTiles; tx++) {
-    for (y = 0; y < frameHeight; y++) {
+for (ty = 0; ty < yTiles && tilesDone<tileCount; ty++) {
+  for (tx = 0; tx < xTiles && tilesDone<tileCount; tx++) {
+    for (y = 0; y < frameHeight && tilesDone<tileCount; y++) {
       start =
         ty * frameCountWidth * frameWidth * frameHeight +
         tx * frameWidth +
@@ -28,6 +30,7 @@ for (ty = 0; ty < yTiles; ty++) {
         flattenedTiles.push(imageData[pixelIdx]);
       }
     }
+    tilesDone++
   }
 }
 
