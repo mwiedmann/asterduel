@@ -136,10 +136,10 @@ create_ship_2:
     lda #12
     ldy #Entity::_ang
     sta (active_entity), y
-    lda #<(8)
+    lda #<(-32)
     ldy #Entity::_vel_x
     sta (active_entity), y
-    lda #>(8)
+    lda #>(-32)
     ldy #Entity::_vel_x+1
     sta (active_entity), y
     ; pass the sprite_num for the ship and create its sprite
@@ -263,13 +263,53 @@ check_shields_and_bases:
     rts
 
 clear_shield_1:
+    lda #<(MAPBASE_L0_ADDR+(BOUNDARY_LEFT_TILE_X*2))
+    sta VERA_ADDR_LO
+    lda #>(MAPBASE_L0_ADDR+(BOUNDARY_LEFT_TILE_X*2))
+    sta VERA_ADDR_MID
+    lda #%10010000
+    sta VERA_ADDR_HI_SET
+    ldx #0
+    lda #0
+@next_eraser:
+    inc
+    cmp #5
+    bne @erase_section
+    lda #1
+@erase_section:
+    sta VERA_DATA0
+    inx
+    cpx #15
+    beq @shield_erased
+    bra @next_eraser
+@shield_erased:
     lda #1
     sta shield_1_cleared
     rts
 
 clear_shield_2:
+    lda #<(MAPBASE_L0_ADDR+(BOUNDARY_RIGHT_TILE_X*2))
+    sta VERA_ADDR_LO
+    lda #>(MAPBASE_L0_ADDR+(BOUNDARY_RIGHT_TILE_X*2))
+    sta VERA_ADDR_MID
+    lda #%10010000
+    sta VERA_ADDR_HI_SET
+    ldx #0
+    lda #0
+@next_eraser:
+    inc
+    cmp #5
+    bne @erase_section
     lda #1
-    sta shield_2_cleared
+@erase_section:
+    sta VERA_DATA0
+    inx
+    cpx #15
+    beq @shield_erased
+    bra @next_eraser
+@shield_erased:
+    lda #1
+    sta shield_1_cleared
     rts
 
 ship_1_wins:
