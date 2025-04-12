@@ -26,8 +26,10 @@ stats_changed: .byte 1
 update_stats:
     lda stats_changed
     cmp #0
-    beq @done
+    bne @show_stats
     stz stats_changed
+    rts
+@show_stats:
     lda base_1_energy
     sta num_to_convert
     jsr convert_to_bcd
@@ -39,6 +41,18 @@ update_stats:
     lda #VERA_ADDR_HI_INC_BITS
     sta VERA_ADDR_HI_SET
     jsr show_number
+
+    lda ship_1_energy
+    sta num_to_convert
+    jsr convert_to_bcd
+    ; Point to the base energy section of mapbase
+    lda #<(MAPBASE_L1_ADDR+SHIP_1_ENERGY_TILE_COUNT)
+    sta VERA_ADDR_LO
+    lda #>(MAPBASE_L1_ADDR+SHIP_1_ENERGY_TILE_COUNT)
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    jsr show_single_digit
 
     lda shield_1_energy
     sta num_to_convert
@@ -64,6 +78,18 @@ update_stats:
     sta VERA_ADDR_HI_SET
     jsr show_number
 
+    lda ship_2_energy
+    sta num_to_convert
+    jsr convert_to_bcd
+    ; Point to the base energy section of mapbase
+    lda #<(MAPBASE_L1_ADDR+SHIP_2_ENERGY_TILE_COUNT)
+    sta VERA_ADDR_LO
+    lda #>(MAPBASE_L1_ADDR+SHIP_2_ENERGY_TILE_COUNT)
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    jsr show_single_digit
+
     lda shield_2_energy
     sta num_to_convert
     jsr convert_to_bcd
@@ -75,7 +101,6 @@ update_stats:
     lda #VERA_ADDR_HI_INC_BITS
     sta VERA_ADDR_HI_SET
     jsr show_number
-@done:
     rts
 
 show_number:
@@ -97,6 +122,15 @@ show_number:
     dex
     cpx #255
     bne @next_num
+    rts
+
+show_single_digit:
+    lda bcd
+    jsr get_font_num
+    lda num_low
+    sta VERA_DATA0
+    lda #0
+    sta VERA_DATA0
     rts
 
 ; Assumes char is in A reg

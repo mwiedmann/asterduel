@@ -283,6 +283,7 @@ check_ship_1_drop_energy:
     bne @done
     inc launch_ship_1_mine
     dec ship_1_energy
+    inc stats_changed
     bra @reset_drop_count
 @done:
     rts
@@ -313,6 +314,7 @@ check_ship_2_drop_energy:
     bne @done
     inc launch_ship_2_mine
     dec ship_2_energy
+    inc stats_changed
     bra @reset_drop_count
 @done:
     rts
@@ -845,9 +847,11 @@ ship_energy:
     cmp #0
     bne @ship_2
     inc ship_1_energy
+    inc stats_changed
     rts
 @ship_2:
     inc ship_2_energy
+    inc stats_changed
     rts
 
 destroy_ship:
