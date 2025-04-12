@@ -351,9 +351,11 @@ check_left_boundary:
     sbc boundary_collision
     bcc @shield_dead
     sta shield_1_energy
+    inc stats_changed
     rts
 @shield_dead:
     stz shield_1_energy
+    inc stats_changed
     rts
 @done:
     stz boundary_collision
@@ -389,9 +391,11 @@ check_right_boundary:
     sbc boundary_collision
     bcc @shield_dead
     sta shield_2_energy
+    inc stats_changed
     rts
 @shield_dead:
     stz shield_2_energy
+    inc stats_changed
     rts
 @done:
     stz boundary_collision
@@ -427,9 +431,11 @@ check_left_base:
     sbc boundary_collision
     bcc @shield_dead
     sta base_1_energy
+    inc stats_changed
     rts
 @shield_dead:
     stz base_1_energy
+    inc stats_changed
     rts
 @done:
     stz boundary_collision
@@ -465,9 +471,11 @@ check_right_base:
     sbc boundary_collision
     bcc @shield_dead
     sta base_2_energy
+    inc stats_changed
     rts
 @shield_dead:
     stz base_2_energy
+    inc stats_changed
     rts
 @done:
     stz boundary_collision

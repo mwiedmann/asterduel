@@ -5,10 +5,10 @@ ship_1_energy: .byte 0
 ship_2_energy: .byte 0
 ship_1_drop_count: .byte BASE_ENERGY_COUNT
 ship_2_drop_count: .byte BASE_ENERGY_COUNT
-shield_1_energy: .byte 100
-shield_2_energy: .byte 100
-base_1_energy: .byte 100
-base_2_energy: .byte 100
+shield_1_energy: .byte 124
+shield_2_energy: .byte 126
+base_1_energy: .byte 123
+base_2_energy: .byte 125
 
 create_ships:
     jsr create_ship_1

@@ -5,11 +5,20 @@ const overlay = []
 let d=1
 let lastHit=false
 const solidTile=5
-
+const baseStart=5
+const baseTiles=[1,0,18,4,52]
+const shieldStart=15
+const shieldTiles=[18,7,8,4,11,3,52]
 for(let y=0; y<32; y++){
     for(let x=0; x<64; x++){
         if (y === 0 || y === 15) {
-            overlay.push(59,0)
+            if (x>=baseStart && x<baseStart+baseTiles.length) {
+                overlay.push(baseTiles[x-baseStart],0)
+            } else if (x>=shieldStart && x<shieldStart+shieldTiles.length) {
+                overlay.push(shieldTiles[x-shieldStart],0)
+            } else {
+                overlay.push(59,0)
+            }
         } else {
             overlay.push(58,0)
         }

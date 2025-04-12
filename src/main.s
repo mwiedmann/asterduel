@@ -79,6 +79,8 @@ zsmreserved: .res 256
 .include "oneshot.s"
 .include "gem.s"
 .include "mine.s"
+.include "tiles.s"
+.include "score.s"
 
 start:
     jsr show_title
@@ -100,6 +102,7 @@ start:
     lda waitflag
     cmp #0
     beq @waiting
+    jsr update_stats
     jsr check_shields_and_bases
     jsr relaunch_astbig
     jsr check_controls
