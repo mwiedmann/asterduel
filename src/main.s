@@ -45,14 +45,19 @@ ship_flip_ang: .byte   %00001000, %00001000, %00001000, %00001000, %00001000, %0
 ; VFLip 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0
 ; HFlip 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1
 
-thrusting: .byte 0
+thrusting_1: .byte 0
+thrusting_2: .byte 0
 
 default_irq: .word 0
 waitflag: .byte 0
 
-rotatewait: .byte 0
-thrustwait: .byte 0
-firewait: .byte 0
+rotatewait_1: .byte 0
+thrustwait_1: .byte 0
+firewait_1: .byte 0
+rotatewait_2: .byte 0
+thrustwait_2: .byte 0
+firewait_2: .byte 0
+
 accelwait: .byte 0
 enemywait: .byte 0
 
@@ -105,7 +110,8 @@ start:
     jsr update_stats
     jsr check_shields_and_bases
     jsr relaunch_astbig
-    jsr check_controls
+    jsr check_controls_ship_1
+    jsr check_controls_ship_2
     jsr process_entities
     jsr update_oneshots
     jsr show_ghosts

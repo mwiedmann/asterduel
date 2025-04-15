@@ -454,26 +454,28 @@ move_entity:
     cmp #SHIP_1_TYPE
     bne @check_ship_2
     ; Check if X<0
-    ldy #Entity::_x+1 ; Point to _y hi bit
+    ldy #Entity::_x+1 ; Point to _x hi bit
     lda (active_entity), y
     cmp #>LANE_X_BIG
     bcc @skip_ship_x_checks
     bne @ship_ob
     ; check low bits
-    ldy #Entity::_x ; Point to _y lo bit
+    ldy #Entity::_x ; Point to _x lo bit
     lda (active_entity), y
     cmp #<LANE_X_BIG
     bcs @ship_ob
     bra @skip_ship_x_checks
 @check_ship_2:
+    cmp #SHIP_2_TYPE
+    bne @skip_ship_x_checks
     ; Check if X<0
-    ldy #Entity::_x+1 ; Point to _y hi bit
+    ldy #Entity::_x+1 ; Point to _x hi bit
     lda (active_entity), y
     cmp #>LANE_X_BIG
     bcc @skip_ship_x_checks
     bne @ship_ob
     ; check low bits
-    ldy #Entity::_x ; Point to _y lo bit
+    ldy #Entity::_x ; Point to _x lo bit
     lda (active_entity), y
     cmp #<LANE_X_BIG
     bcs @ship_ob
@@ -625,6 +627,7 @@ move_entity:
     adc #LANE_PIXEL_ADJUST
     sta (active_entity), y
     ldy #Entity::_pixel_show_y+1
+    lda (active_entity), y
     adc #0
     sta (active_entity), y
 @pixel_done:

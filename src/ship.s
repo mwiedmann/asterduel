@@ -142,6 +142,12 @@ create_ship_2:
     lda #>(-32)
     ldy #Entity::_vel_x+1
     sta (active_entity), y
+    lda #<(-32)
+    ldy #Entity::_vel_y
+    sta (active_entity), y
+    lda #>(-32)
+    ldy #Entity::_vel_y+1
+    sta (active_entity), y
     ; pass the sprite_num for the ship and create its sprite
     lda #SHIP_2_SPRITE_NUM
     sta cs_sprite_num
@@ -210,7 +216,7 @@ set_ship_2_as_ghost:
     sta comp_entity1+1
     rts
 
-thrusting_ship_img:
+thrusting_ship_img_1:
     lda #<SHIP_1_THRUST_LOAD_ADDR
     sta us_img_addr
     lda #>SHIP_1_THRUST_LOAD_ADDR
@@ -219,12 +225,30 @@ thrusting_ship_img:
     sta us_img_addr+2
     rts
 
-normal_ship_img:
+normal_ship_img_1:
     lda #<SHIP_1_LOAD_ADDR
     sta us_img_addr
     lda #>SHIP_1_LOAD_ADDR
     sta us_img_addr+1
     lda #<(SHIP_1_LOAD_ADDR>>16)
+    sta us_img_addr+2
+    rts
+
+thrusting_ship_img_2:
+    lda #<SHIP_2_THRUST_LOAD_ADDR
+    sta us_img_addr
+    lda #>SHIP_2_THRUST_LOAD_ADDR
+    sta us_img_addr+1
+    lda #<(SHIP_2_THRUST_LOAD_ADDR>>16)
+    sta us_img_addr+2
+    rts
+
+normal_ship_img_2:
+    lda #<SHIP_2_LOAD_ADDR
+    sta us_img_addr
+    lda #>SHIP_2_LOAD_ADDR
+    sta us_img_addr+1
+    lda #<(SHIP_2_LOAD_ADDR>>16)
     sta us_img_addr+2
     rts
 

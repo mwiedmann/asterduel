@@ -170,14 +170,25 @@ update_sprite:
     ldy #Entity::_type ; Entity visibility
     lda (active_entity), y
     cmp #SHIP_1_TYPE
-    bne @skip_thrust
-    lda thrusting
+    bne @check_ship_2
+    lda thrusting_1
     cmp #0
-    beq @not_thrust
-    jsr thrusting_ship_img
+    beq @not_thrust_1
+    jsr thrusting_ship_img_1
     bra @start_move_frame
-@not_thrust:
-    jsr normal_ship_img
+@not_thrust_1:
+    jsr normal_ship_img_1
+    bra @start_move_frame
+@check_ship_2:
+    cmp #SHIP_2_TYPE
+    bne @skip_thrust
+    lda thrusting_2
+    cmp #0
+    beq @not_thrust_2
+    jsr thrusting_ship_img_2
+    bra @start_move_frame
+@not_thrust_2:
+    jsr normal_ship_img_2
     bra @start_move_frame
 @skip_thrust:
     ; Load the image addr so we can add to and bit shift it
