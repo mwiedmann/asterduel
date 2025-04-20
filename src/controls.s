@@ -104,7 +104,7 @@ check_controls_ship_1:
     rts
 
 check_controls_ship_2:
-    lda #0
+    lda #1
     jsr JOYGET
     sta joy_a ; hold the joystick A state
     stx joy_x ; hold the joystick X state

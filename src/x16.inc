@@ -1,7 +1,14 @@
 .ifndef X16_H
 X16_H = 1
 
-BANK=$0
+BANK = $0
+
+R0L = $2
+R0H = $3
+R1L = $4
+R1H = $5
+R2L = $6
+R2H = $7
 
 ; Kernal functions
 RDTIM = $FFDE
@@ -9,6 +16,8 @@ JOYGET = $FF56
 SETNAM = $FFBD
 SETLFS = $FFBA
 LOAD = $FFD5
+MEMFILL = $FEE4
+MEMCOPY = $FEE7
 
 IRQ_FUNC_ADDR = $0314
 

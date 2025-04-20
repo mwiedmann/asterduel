@@ -352,6 +352,7 @@ check_left_boundary:
     sec
     sbc boundary_collision
     bcc @shield_dead
+    beq @shield_dead
     sta shield_1_energy
     inc stats_changed
     rts
@@ -392,6 +393,7 @@ check_right_boundary:
     sec
     sbc boundary_collision
     bcc @shield_dead
+    beq @shield_dead
     sta shield_2_energy
     inc stats_changed
     rts
