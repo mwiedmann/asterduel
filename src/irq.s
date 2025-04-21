@@ -72,4 +72,13 @@ irq_config:
     cli
     rts
 
+irq_restore:
+    sei
+    lda default_irq
+    sta IRQ_FUNC_ADDR
+    lda default_irq+1
+    sta IRQ_FUNC_ADDR+1
+    cli
+    rts
+
 .endif

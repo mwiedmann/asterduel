@@ -20,8 +20,6 @@ mine_filename: .asciiz "mine.bin"
 
 load_sprites:
     jsr load_star_tiles
-    jsr load_star_field
-    jsr load_overlay
     jsr load_ship1
     jsr load_ship_thust1
     jsr load_ship2
@@ -34,6 +32,11 @@ load_sprites:
     jsr load_gem
     jsr load_font
     jsr load_mine
+    rts
+
+load_layers:
+    jsr load_star_field
+    jsr load_overlay
     rts
 
 load_star_tiles:

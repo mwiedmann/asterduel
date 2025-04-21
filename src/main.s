@@ -86,14 +86,18 @@ zsmreserved: .res 256
 .include "mine.s"
 .include "tiles.s"
 .include "score.s"
+.include "settings.s"
 
 start:
     jsr show_title
     ;jsr sound_init
     jsr load_mainpal
     jsr load_sprites
-    ;jsr load_sounds
+    ;jsr load_sounds'
+@new_game:
     jsr irq_config
+    jsr load_layers
+    jsr reset_settings
     jsr config
     jsr create_ships
     jsr create_laser_sprites
@@ -109,6 +113,9 @@ start:
     beq @waiting
     jsr update_stats
     jsr check_shields_and_bases
+    lda game_over
+    cmp #0
+    bne @game_over
     jsr relaunch_astbig
     jsr check_controls_ship_1
     jsr check_controls_ship_2
@@ -130,3 +137,7 @@ start:
 @skip_base2_mines:
     stz waitflag
     bra @waiting
+@game_over:
+    jsr watch_for_joystick_press
+    jsr irq_restore
+    bra @new_game

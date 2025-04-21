@@ -1,14 +1,8 @@
 .ifndef SHIP_S
 SHIP_S = 1
 
-ship_1_energy: .byte 0
-ship_2_energy: .byte 0
 ship_1_drop_count: .byte BASE_ENERGY_COUNT
 ship_2_drop_count: .byte BASE_ENERGY_COUNT
-shield_1_energy: .byte 100
-shield_2_energy: .byte 100
-base_1_energy: .byte 100
-base_2_energy: .byte 100
 
 create_ships:
     jsr create_ship_1
@@ -337,13 +331,13 @@ clear_shield_2:
     rts
 
 ship_1_wins:
-    ; TODO: End game screen
-    ; inf loop for now
-    jmp ship_1_wins
+    lda #1
+    sta game_over
+    rts
 
 ship_2_wins:
-    ; TODO: End game screen
-    ; inf loop for now
-    jmp ship_2_wins
+    lda #1
+    sta game_over
+    rts
 
 .endif
