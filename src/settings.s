@@ -9,8 +9,8 @@ base_1_energy: .byte 0
 base_2_energy: .byte 0
 game_over: .byte 0
 
-shield_starting_energy: .byte 100
-base_starting_energy: .byte 100
+shield_starting_energy: .byte 25
+base_starting_energy: .byte 25
 
 reset_settings:
     lda #0
@@ -27,7 +27,7 @@ reset_settings:
     rts
 
 test_settings:
-    ;lda #5
-    ;sta ship_1_energy
+    lda #5
+    sta ship_1_energy
     rts
 .endif

@@ -330,9 +330,81 @@ clear_shield_2:
     sta shield_1_cleared
     rts
 
+end_game_count: .byte 0
+end_exp_y: .byte 0
+end_game_exp_count: .byte 0
+
+create_explosion_base2:
+    jsr set_ship_2_as_active
+    ldy #Entity::_pixel_x
+    lda #<BASE_SHIP_2_ENERGY_DROP_X
+    sta (active_entity), y
+    ldy #Entity::_pixel_x+1
+    lda #>BASE_SHIP_2_ENERGY_DROP_X
+    sta (active_entity), y
+    lda #<600
+    ldy #Entity::_pixel_show_x
+    sta (active_entity), y
+    lda #>600
+    ldy #Entity::_pixel_show_x+1
+    sta (active_entity), y
+
+    ldy #Entity::_pixel_y+1
+    lda end_exp_y
+    sta (active_entity), y
+    ldy #Entity::_pixel_y+1
+    lda #0
+    sta (active_entity), y
+    clc
+    lda end_exp_y
+    adc #240
+    ldy #Entity::_pixel_show_y
+    sta (active_entity), y
+    lda #0
+    adc #0
+    ldy #Entity::_pixel_show_y+1
+    sta (active_entity), y
+    clc
+    lda end_exp_y
+    adc #75
+    sta end_exp_y
+    jsr create_explosion_active_entity
+    ;jsr sound_explode
+    rts
+
 ship_1_wins:
+    stz end_game_count
+    stz end_game_exp_count
     lda #1
     sta game_over
+    jsr destroy_ship_2
+    jsr create_explosion_active_entity
+    ; move views back to base 2
+    lda #<SHIP_MAX_SCROLL
+    ;sta scroll_lane1_x
+    sta scroll_lane2_x
+    lda #>SHIP_MAX_SCROLL
+    ;sta scroll_lane1_x+1
+    sta scroll_lane2_x+1
+@waiting:
+    lda waitflag
+    cmp #0
+    beq @waiting
+    lda end_game_count
+    cmp #5
+    bne @continue
+    stz end_game_count
+    jsr create_explosion_base2
+    inc end_game_exp_count
+    lda end_game_exp_count
+    cmp #30
+    beq @done
+@continue:
+    inc end_game_count
+    jsr update_oneshots
+    stz waitflag
+    bra @waiting
+@done:
     rts
 
 ship_2_wins:
