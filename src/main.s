@@ -139,5 +139,6 @@ start:
     bra @waiting
 @game_over:
     jsr watch_for_joystick_press
+    jsr hide_all_sprites
     jsr irq_restore
     bra @new_game

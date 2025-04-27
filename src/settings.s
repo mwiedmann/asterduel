@@ -30,4 +30,5 @@ test_settings:
     lda #5
     sta ship_1_energy
     rts
+    
 .endif

@@ -397,7 +397,7 @@ ship_1_wins:
     jsr create_explosion_base2
     inc end_game_exp_count
     lda end_game_exp_count
-    cmp #30
+    cmp #45
     beq @done
 @continue:
     inc end_game_count

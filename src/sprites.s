@@ -401,4 +401,23 @@ accel_entity:
     sta (acc_entity), y
     rts
 
+hide_count: .byte 0
+
+hide_all_sprites:
+    lda #<SPRITE_Z_ADDR
+    sta VERA_ADDR_LO
+    lda #>SPRITE_Z_ADDR
+    sta VERA_ADDR_MID
+    lda #%01000001 ; Inc 8, Sprites are in 2nd bank of VRAM
+    sta VERA_ADDR_HI_SET
+    stz hide_count
+@next:
+    lda #0
+    sta VERA_DATA0
+    inc hide_count
+    lda hide_count
+    cmp #128
+    bne @next
+    rts
+
 .endif
