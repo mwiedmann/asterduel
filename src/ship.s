@@ -130,16 +130,16 @@ create_ship_2:
     lda #12
     ldy #Entity::_ang
     sta (active_entity), y
-    lda #<(-16)
+    lda #<(-32)
     ldy #Entity::_vel_x
     sta (active_entity), y
-    lda #>(-16)
+    lda #>(-32)
     ldy #Entity::_vel_x+1
     sta (active_entity), y
-    lda #<(-16)
+    lda #<(-32)
     ldy #Entity::_vel_y
     sta (active_entity), y
-    lda #>(-16)
+    lda #>(-32)
     ldy #Entity::_vel_y+1
     sta (active_entity), y
     ; pass the sprite_num for the ship and create its sprite
@@ -276,7 +276,9 @@ check_shields_and_bases:
     lda base_2_energy
     cmp #0
     bne @done
-    jsr ship_1_wins
+    lda #1
+    sta game_over
+    jsr create_ship_2
 @done:
     rts
 
@@ -375,17 +377,9 @@ create_explosion_base2:
 ship_1_wins:
     stz end_game_count
     stz end_game_exp_count
-    lda #1
-    sta game_over
     jsr destroy_ship_2
-    jsr create_explosion_active_entity
-    ; move views back to base 2
-    lda #<SHIP_MAX_SCROLL
-    ;sta scroll_lane1_x
-    sta scroll_lane2_x
-    lda #>SHIP_MAX_SCROLL
-    ;sta scroll_lane1_x+1
-    sta scroll_lane2_x+1
+    jsr update_oneshots
+    jsr show_ghosts
 @waiting:
     lda waitflag
     cmp #0

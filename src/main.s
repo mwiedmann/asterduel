@@ -113,9 +113,6 @@ start:
     beq @waiting
     jsr update_stats
     jsr check_shields_and_bases
-    lda game_over
-    cmp #0
-    bne @game_over
     jsr relaunch_astbig
     jsr check_controls_ship_1
     jsr check_controls_ship_2
@@ -123,6 +120,9 @@ start:
     jsr update_oneshots
     jsr show_ghosts
     jsr handle_collision
+    lda game_over
+    cmp #0
+    bne @game_over
     lda launch_ship_1_mine
     cmp #0
     beq @skip_base1_mines
@@ -138,6 +138,7 @@ start:
     stz waitflag
     bra @waiting
 @game_over:
+    jsr ship_1_wins
     jsr watch_for_joystick_press
     jsr hide_all_sprites
     jsr irq_restore
