@@ -94,7 +94,7 @@ start:
     jsr load_mainpal
     jsr load_sprites
     ;jsr load_sounds'
-@new_game:
+new_game:
     jsr irq_config
     jsr load_layers
     jsr reset_settings
@@ -138,8 +138,15 @@ start:
     stz waitflag
     bra @waiting
 @game_over:
+    cmp #2
+    beq @ship_2_wins
+    ; ship 1 wins
     jsr ship_1_wins
+    bra @win_new_game
+@ship_2_wins:
+    jsr ship_2_wins
+@win_new_game:
     jsr watch_for_joystick_press
     jsr hide_all_sprites
     jsr irq_restore
-    bra @new_game
+    jmp new_game

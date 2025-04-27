@@ -29,6 +29,7 @@ reset_settings:
 test_settings:
     lda #5
     sta ship_1_energy
+    sta ship_2_energy
     rts
-    
+
 .endif

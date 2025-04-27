@@ -71,6 +71,20 @@ create_ship_1:
     lda #4
     ldy #Entity::_ang
     sta (active_entity), y
+
+    lda #<(32)
+    ldy #Entity::_vel_x
+    sta (active_entity), y
+    lda #>(32)
+    ldy #Entity::_vel_x+1
+    sta (active_entity), y
+    lda #<(32)
+    ldy #Entity::_vel_y
+    sta (active_entity), y
+    lda #>(32)
+    ldy #Entity::_vel_y+1
+    sta (active_entity), y
+
     ; pass the sprite_num for the ship and create its sprite
     lda #SHIP_1_SPRITE_NUM
     sta cs_sprite_num
@@ -271,7 +285,10 @@ check_shields_and_bases:
     lda base_1_energy
     cmp #0
     bne @check_base_2
-    jsr ship_2_wins
+    lda #2
+    sta game_over
+    jsr create_ship_1
+    bra @done
 @check_base_2:
     lda base_2_energy
     cmp #0
@@ -336,6 +353,43 @@ end_game_count: .byte 0
 end_exp_y: .byte 0
 end_game_exp_count: .byte 0
 
+create_explosion_base1:
+    jsr set_ship_1_as_active
+    ldy #Entity::_pixel_x
+    lda #<BASE_SHIP_1_ENERGY_DROP_X
+    sta (active_entity), y
+    ldy #Entity::_pixel_x+1
+    lda #>BASE_SHIP_1_ENERGY_DROP_X
+    sta (active_entity), y
+    lda #<16
+    ldy #Entity::_pixel_show_x
+    sta (active_entity), y
+    lda #>16
+    ldy #Entity::_pixel_show_x+1
+    sta (active_entity), y
+
+    ldy #Entity::_pixel_y
+    lda end_exp_y
+    sta (active_entity), y
+    ldy #Entity::_pixel_y+1
+    lda #0
+    sta (active_entity), y
+    clc
+    lda end_exp_y
+    ldy #Entity::_pixel_show_y
+    sta (active_entity), y
+    lda #0
+    adc #0
+    ldy #Entity::_pixel_show_y+1
+    sta (active_entity), y
+    clc
+    lda end_exp_y
+    adc #75
+    sta end_exp_y
+    jsr create_explosion_active_entity
+    ;jsr sound_explode
+    rts
+
 create_explosion_base2:
     jsr set_ship_2_as_active
     ldy #Entity::_pixel_x
@@ -351,7 +405,7 @@ create_explosion_base2:
     ldy #Entity::_pixel_show_x+1
     sta (active_entity), y
 
-    ldy #Entity::_pixel_y+1
+    ldy #Entity::_pixel_y
     lda end_exp_y
     sta (active_entity), y
     ldy #Entity::_pixel_y+1
@@ -402,8 +456,30 @@ ship_1_wins:
     rts
 
 ship_2_wins:
-    lda #1
-    sta game_over
+    stz end_game_count
+    stz end_game_exp_count
+    jsr destroy_ship_1
+    jsr update_oneshots
+    jsr show_ghosts
+@waiting:
+    lda waitflag
+    cmp #0
+    beq @waiting
+    lda end_game_count
+    cmp #5
+    bne @continue
+    stz end_game_count
+    jsr create_explosion_base1
+    inc end_game_exp_count
+    lda end_game_exp_count
+    cmp #45
+    beq @done
+@continue:
+    inc end_game_count
+    jsr update_oneshots
+    stz waitflag
+    bra @waiting
+@done:
     rts
 
 .endif
