@@ -428,6 +428,10 @@ create_explosion_base2:
     ;jsr sound_explode
     rts
 
+
+ship_1_wins_text: .asciiz "PLAYER 1 WINS"
+ship_2_wins_text: .asciiz "PLAYER 2 WINS"
+
 ship_1_wins:
     stz end_game_count
     stz end_game_exp_count
@@ -446,13 +450,18 @@ ship_1_wins:
     inc end_game_exp_count
     lda end_game_exp_count
     cmp #45
-    beq @done
+    beq @show_winner
 @continue:
     inc end_game_count
     jsr update_oneshots
     stz waitflag
     bra @waiting
-@done:
+@show_winner:
+    lda #<ship_1_wins_text
+    sta param1
+    lda #>ship_1_wins_text
+    sta param1+1
+    jsr display_winner
     rts
 
 ship_2_wins:
@@ -473,12 +482,56 @@ ship_2_wins:
     inc end_game_exp_count
     lda end_game_exp_count
     cmp #45
-    beq @done
+    beq @show_winner
 @continue:
     inc end_game_count
     jsr update_oneshots
     stz waitflag
     bra @waiting
+@show_winner:
+    lda #<ship_2_wins_text
+    sta param1
+    lda #>ship_2_wins_text
+    sta param1+1
+    jsr display_winner
+    rts
+
+display_winner:
+    jsr show_winner_top
+    jsr show_winner_bottom
+    rts
+
+show_winner_top:
+    lda #<(MAPBASE_L1_ADDR+WINNER_TILE_COUNT_1)
+    sta VERA_ADDR_LO
+    lda #>(MAPBASE_L1_ADDR+WINNER_TILE_COUNT_1)
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    jsr show_winner
+    rts
+
+show_winner_bottom:
+    lda #<(MAPBASE_L1_ADDR+WINNER_TILE_COUNT_2)
+    sta VERA_ADDR_LO
+    lda #>(MAPBASE_L1_ADDR+WINNER_TILE_COUNT_2)
+    sta VERA_ADDR_MID
+    lda #VERA_ADDR_HI_INC_BITS
+    sta VERA_ADDR_HI_SET
+    jsr show_winner
+    rts
+
+show_winner:
+    ldy #0
+@next_char:
+    lda (param1), y
+    cmp #0
+    beq @done
+    jsr get_font_char
+    sta VERA_DATA0
+    stz VERA_DATA0
+    iny
+    bra @next_char
 @done:
     rts
 
