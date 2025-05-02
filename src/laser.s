@@ -190,7 +190,7 @@ fire_laser_1:
     bne @next_entity
     rts
 @good_entity:
-    ;jsr sound_shoot
+    jsr sound_shoot
     ; Found a free laser
     ; Move it to the ship position and launch it!
     ldy #0 ; copy bytes 0-20
@@ -278,7 +278,7 @@ fire_laser_2:
     bne @next_entity
     rts
 @good_entity:
-    ;jsr sound_shoot
+    jsr sound_shoot
     ; Found a free laser
     ; Move it to the ship position and launch it!
     ldy #0 ; copy bytes 0-20

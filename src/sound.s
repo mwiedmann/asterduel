@@ -57,4 +57,129 @@ sound_set_bank:
 	jsr zsm_setbank
 	rts
 
+sound_shoot:
+	lda soundmuted
+	cmp #1
+	beq @done
+	lda #<MISSILE_SOUND
+	ldx #SOUND_PRIORITY_SHOOT ; Priority
+	ldy #>MISSILE_SOUND; address hi to Y
+	jsr zsm_setmem
+	ldx #SOUND_PRIORITY_SHOOT
+	jsr zsm_play
+@done:
+    rts
+
+sound_explode:
+	lda soundmuted
+	cmp #1
+	beq @done
+	lda #<EXPLODE_SOUND
+	ldx #SOUND_PRIORITY_EXPLODE ; Priority
+	ldy #>EXPLODE_SOUND; address hi to Y
+	jsr zsm_setmem
+	ldx #SOUND_PRIORITY_EXPLODE
+	jsr zsm_play
+@done:
+    rts
+
+sound_crystal:
+	lda soundmuted
+	cmp #1
+	beq @done
+	lda #<CRYSTAL_SOUND
+	ldx #SOUND_PRIORITY_CRYSTAL ; Priority
+	ldy #>CRYSTAL_SOUND; address hi to Y
+	jsr zsm_setmem
+	ldx #SOUND_PRIORITY_CRYSTAL
+	jsr zsm_play
+@done:
+    rts
+
+playing_thrust: .byte 0
+playing_mine: .byte 0
+
+sound_thrust_check:
+	lda soundmuted
+	cmp #1
+	beq @done
+	lda thrusting_1
+	cmp #1
+	beq @thrusting
+	lda thrusting_2
+	cmp #1
+	beq @thrusting
+	; not thrusting, turn sound off if playing
+	lda playing_thrust
+	cmp #0
+	beq @done
+	jsr sound_thrust_stop
+	bra @done
+@thrusting:
+	lda playing_thrust
+	cmp #1
+	beq @done
+	jsr sound_thrust_play
+@done:
+    rts
+
+sound_thrust_stop:
+	lda soundmuted
+	cmp #1
+	beq @done
+	ldx #SOUND_PRIORITY_THRUST
+	jsr zsm_stop
+	lda #0
+	sta playing_thrust
+@done:
+	rts
+
+sound_thrust_play:
+	lda soundmuted
+	cmp #1
+	beq @done
+	lda #<THRUST_SOUND
+	ldx #SOUND_PRIORITY_THRUST ; Priority
+	ldy #>THRUST_SOUND; address hi to Y
+	jsr zsm_setmem
+	ldx #SOUND_PRIORITY_THRUST
+	jsr zsm_play
+	lda #1
+	sta playing_thrust
+@done:
+	rts
+
+sound_cut_play:
+	lda soundmuted
+	cmp #1
+	beq @done
+	jsr sound_cut_stop
+	lda #<CUT_SOUND
+	ldx #SOUND_PRIORITY_CUT ; Priority
+	ldy #>CUT_SOUND; address hi to Y
+	jsr zsm_setmem
+	ldx #SOUND_PRIORITY_CUT
+	jsr zsm_play
+@done:
+	rts
+
+sound_cut_stop:
+	lda soundmuted
+	cmp #1
+	beq @done
+	ldx #SOUND_PRIORITY_CUT
+	jsr zsm_stop
+@done:
+	rts
+
+sound_toggle:
+	lda soundmuted
+	eor #%1
+	sta soundmuted
+	rts
+	
+sound_all_stop:
+	jsr sound_thrust_stop
+	rts
+
 .endif

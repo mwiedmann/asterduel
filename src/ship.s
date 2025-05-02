@@ -387,7 +387,6 @@ create_explosion_base1:
     adc #75
     sta end_exp_y
     jsr create_explosion_active_entity
-    ;jsr sound_explode
     rts
 
 create_explosion_base2:
@@ -425,7 +424,6 @@ create_explosion_base2:
     adc #75
     sta end_exp_y
     jsr create_explosion_active_entity
-    ;jsr sound_explode
     rts
 
 

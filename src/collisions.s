@@ -807,44 +807,11 @@ create_explosion_active_entity:
     lda (active_entity), y
     sta os_y+1
     jsr create_explosion
-    ;jsr sound_explode
+    jsr sound_explode
     rts
 
-; create_explosion_2:
-;     ldy #Entity::_pixel_x
-;     lda (comp_entity2), y
-;     sta os_x
-;     ldy #Entity::_pixel_x+1
-;     lda (comp_entity2), y
-;     sta os_x+1
-;     ldy #Entity::_pixel_y
-;     lda (comp_entity2), y
-;     sta os_y
-;     ldy #Entity::_pixel_y+1
-;     lda (comp_entity2), y
-;     sta os_y+1
-;     jsr create_explosion
-;     jsr sound_explode
-;     rts
-
-; create_score_entity2:
-;     ldy #Entity::_pixel_x
-;     lda (comp_entity2), y
-;     sta os_x
-;     ldy #Entity::_pixel_x+1
-;     lda (comp_entity2), y
-;     sta os_x+1
-;     ldy #Entity::_pixel_y
-;     lda (comp_entity2), y
-;     sta os_y
-;     ldy #Entity::_pixel_y+1
-;     lda (comp_entity2), y
-;     sta os_y+1
-;     ; os_frame must already be set
-;     jsr create_score
-;     rts
-
 ship_energy:
+    jsr sound_crystal
     lda hc_outer_entity_count
     cmp #0
     bne @ship_2

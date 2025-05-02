@@ -18,6 +18,13 @@ gem_filename: .asciiz "gem.bin"
 font_filename: .asciiz "font.bin"
 mine_filename: .asciiz "mine.bin"
 
+missile_sound_filename: .asciiz "missile.zsm"
+explode_sound_filename: .asciiz "explode.zsm"
+thrust_sound_filename: .asciiz "thrust.zsm"
+crystal_sound_filename: .asciiz "crystal.zsm"
+mine_sound_filename: .asciiz "mine.zsm"
+cut_sound_filename: .asciiz "cut.zsm"
+
 load_sprites:
     jsr load_star_tiles
     jsr load_ship1
@@ -278,6 +285,98 @@ load_mine:
     ldx #<MINE_1_LOAD_ADDR 
     ldy #>MINE_1_LOAD_ADDR
     jsr LOAD
+    rts
+
+load_sounds:
+    lda #SOUND_BANK
+	sta BANK
+    lda #11
+    ldx #<missile_sound_filename
+    ldy #>missile_sound_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0 ; RAM
+    ldx #<MISSILE_SOUND 
+    ldy #>MISSILE_SOUND
+    jsr LOAD
+
+    lda #11
+    ldx #<explode_sound_filename
+    ldy #>explode_sound_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0 ; RAM
+    ldx #<EXPLODE_SOUND 
+    ldy #>EXPLODE_SOUND
+    jsr LOAD
+
+    lda #10
+    ldx #<thrust_sound_filename
+    ldy #>thrust_sound_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0 ; RAM
+    ldx #<THRUST_SOUND 
+    ldy #>THRUST_SOUND
+    jsr LOAD
+
+    lda #11
+    ldx #<crystal_sound_filename
+    ldy #>crystal_sound_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0 ; RAM
+    ldx #<CRYSTAL_SOUND 
+    ldy #>CRYSTAL_SOUND
+    jsr LOAD
+
+    lda #8
+    ldx #<mine_sound_filename
+    ldy #>mine_sound_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0 ; RAM
+    ldx #<MINE_SOUND 
+    ldy #>MINE_SOUND
+    jsr LOAD
+
+    lda #7
+    ldx #<cut_sound_filename
+    ldy #>cut_sound_filename
+    jsr SETNAM
+    ; 0,8,2
+    lda #0
+    ldx #8
+    ldy #2
+    jsr SETLFS
+    lda #0 ; RAM
+    ldx #<CUT_SOUND 
+    ldy #>CUT_SOUND
+    jsr LOAD
+    
+    lda #ZSM_BANK
+	sta BANK
+
     rts
 
 .endif

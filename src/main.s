@@ -90,10 +90,10 @@ zsmreserved: .res 256
 
 start:
     jsr show_title
-    ;jsr sound_init
+    jsr sound_init
     jsr load_mainpal
     jsr load_sprites
-    ;jsr load_sounds'
+    jsr load_sounds
 new_game:
     jsr irq_config
     jsr load_layers
@@ -120,6 +120,7 @@ new_game:
     jsr update_oneshots
     jsr show_ghosts
     jsr handle_collision
+    jsr sound_thrust_check
     lda game_over
     cmp #0
     bne @game_over
