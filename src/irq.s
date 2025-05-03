@@ -3,7 +3,6 @@ IRQ_S = 1
 
 scroll_lane1_x: .word 0
 scroll_lane2_x: .word 0
-lineval: .byte 0
 
 irq_routine:
     lda VERA_ISR
@@ -11,9 +10,6 @@ irq_routine:
     cmp #1
     beq @vsync
     ; Line IRQ
-    lda lineval
-    cmp #0
-    beq @top
     ; bottom
     lda scroll_lane2_x
     sta VERA_L0_HSCROLL_L
@@ -23,17 +19,12 @@ irq_routine:
     sta VERA_L0_VSCROLL_L
     lda #>SCROLL_BOTTOM_ADJUST
     sta VERA_L0_VSCROLL_H
-    lda #0
-    sta lineval
-    lda #0
-    sta VERA_SCANLINE_L
     bra @continue
 @vsync:
     lda #1
     sta waitflag ; Signal that its ok to draw now
     inc accelwait
-    bra @continue
-@top:
+    ; handle top area as well
     lda #0
     sta VERA_L0_VSCROLL_L
     sta VERA_L0_VSCROLL_H
@@ -41,10 +32,6 @@ irq_routine:
     sta VERA_L0_HSCROLL_L
     lda scroll_lane1_x+1
     sta VERA_L0_HSCROLL_H
-    lda #1
-    sta lineval
-    lda #240
-    sta VERA_SCANLINE_L
 @continue:
     lda #10
     sta VERA_ISR
@@ -64,8 +51,7 @@ irq_config:
     lda #>irq_routine
     sta IRQ_FUNC_ADDR+1
     ; Just LINE and VSYNC
-    lda #0
-    sta lineval
+    lda #240
     sta VERA_SCANLINE_L
     lda #%11
     sta VERA_IEN
