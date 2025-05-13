@@ -277,6 +277,7 @@ launch_mine_1:
     cmp #MINE_1_COUNT
     bne @next_entity
 @done:
+    jsr sound_mine
     rts
 
 launch_mine_2:
@@ -336,6 +337,7 @@ launch_mine_2:
     cmp #MINE_2_COUNT
     bne @next_entity
 @done:
+    jsr sound_mine
     rts
 
 found_free_mine:

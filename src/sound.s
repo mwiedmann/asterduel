@@ -96,8 +96,20 @@ sound_crystal:
 @done:
     rts
 
+sound_mine:
+	lda soundmuted
+	cmp #1
+	beq @done
+	lda #<MINE_SOUND
+	ldx #SOUND_PRIORITY_MINE ; Priority
+	ldy #>MINE_SOUND; address hi to Y
+	jsr zsm_setmem
+	ldx #SOUND_PRIORITY_MINE
+	jsr zsm_play
+@done:
+    rts
+
 playing_thrust: .byte 0
-playing_mine: .byte 0
 
 sound_thrust_check:
 	lda soundmuted

@@ -838,6 +838,7 @@ destroy_ship_1:
     ldy #Entity::_death_count
     lda #SHIP_RESPAWN_COUNT
     sta (active_entity), y
+    stz ship_1_energy
     jsr inactivate_entity
     rts
 
@@ -846,6 +847,7 @@ destroy_ship_2:
     ldy #Entity::_death_count
     lda #SHIP_RESPAWN_COUNT
     sta (active_entity), y
+    stz ship_2_energy
     jsr inactivate_entity
     rts
 

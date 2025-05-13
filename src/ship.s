@@ -72,18 +72,18 @@ create_ship_1:
     ldy #Entity::_ang
     sta (active_entity), y
 
-    lda #<(32)
-    ldy #Entity::_vel_x
-    sta (active_entity), y
-    lda #>(32)
-    ldy #Entity::_vel_x+1
-    sta (active_entity), y
-    lda #<(32)
-    ldy #Entity::_vel_y
-    sta (active_entity), y
-    lda #>(32)
-    ldy #Entity::_vel_y+1
-    sta (active_entity), y
+    ; lda #<(32)
+    ; ldy #Entity::_vel_x
+    ; sta (active_entity), y
+    ; lda #>(32)
+    ; ldy #Entity::_vel_x+1
+    ; sta (active_entity), y
+    ; lda #<(32)
+    ; ldy #Entity::_vel_y
+    ; sta (active_entity), y
+    ; lda #>(32)
+    ; ldy #Entity::_vel_y+1
+    ; sta (active_entity), y
 
     ; pass the sprite_num for the ship and create its sprite
     lda #SHIP_1_SPRITE_NUM
@@ -144,18 +144,20 @@ create_ship_2:
     lda #12
     ldy #Entity::_ang
     sta (active_entity), y
-    lda #<(-32)
-    ldy #Entity::_vel_x
-    sta (active_entity), y
-    lda #>(-32)
-    ldy #Entity::_vel_x+1
-    sta (active_entity), y
-    lda #<(-32)
-    ldy #Entity::_vel_y
-    sta (active_entity), y
-    lda #>(-32)
-    ldy #Entity::_vel_y+1
-    sta (active_entity), y
+
+    ; lda #<(-32)
+    ; ldy #Entity::_vel_x
+    ; sta (active_entity), y
+    ; lda #>(-32)
+    ; ldy #Entity::_vel_x+1
+    ; sta (active_entity), y
+    ; lda #<(-32)
+    ; ldy #Entity::_vel_y
+    ; sta (active_entity), y
+    ; lda #>(-32)
+    ; ldy #Entity::_vel_y+1
+    ; sta (active_entity), y
+
     ; pass the sprite_num for the ship and create its sprite
     lda #SHIP_2_SPRITE_NUM
     sta cs_sprite_num
