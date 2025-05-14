@@ -330,7 +330,7 @@ check_left_boundary:
     stz boundary_collision
     ldy #Entity::_collision_id
     lda (active_entity), y
-    and #BOUNDARY_LEFT_COLLISION_MATRIX
+    and #BOUNDARY_LEFT_SHIELD_COLLISION_MATRIX
     cmp #0
     beq @done
     ; can collide
@@ -371,7 +371,7 @@ check_right_boundary:
     stz boundary_collision
     ldy #Entity::_collision_id
     lda (active_entity), y
-    and #BOUNDARY_RIGHT_COLLISION_MATRIX
+    and #BOUNDARY_RIGHT_SHIELD_COLLISION_MATRIX
     cmp #0
     beq @done
     ; can collide
@@ -406,13 +406,13 @@ check_right_boundary:
     rts
 
 check_left_base:
-    lda shield_1_energy
-    cmp #0
-    bne @done ; can't hit base if shield is up
+    ; lda shield_1_energy
+    ; cmp #0
+    ; bne @done ; can't hit base if shield is up
     stz boundary_collision
     ldy #Entity::_collision_id
     lda (active_entity), y
-    and #BOUNDARY_LEFT_COLLISION_MATRIX
+    and #BOUNDARY_LEFT_BASE_COLLISION_MATRIX
     cmp #0
     beq @done
     ; can collide
@@ -446,13 +446,13 @@ check_left_base:
     rts
 
 check_right_base:
-    lda shield_2_energy
-    cmp #0
-    bne @done ; can't hit base if shield is up
+    ; lda shield_2_energy
+    ; cmp #0
+    ; bne @done ; can't hit base if shield is up
     stz boundary_collision
     ldy #Entity::_collision_id
     lda (active_entity), y
-    and #BOUNDARY_RIGHT_COLLISION_MATRIX
+    and #BOUNDARY_RIGHT_BASE_COLLISION_MATRIX
     cmp #0
     beq @done
     ; can collide

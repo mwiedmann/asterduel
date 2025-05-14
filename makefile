@@ -38,6 +38,7 @@ img:
 
 title:
 	node tools/gimp-img-convert.js gfx/title.data build/TITLE.BIN 320 240 1 0 1 1
+	node tools/gimp-img-convert.js gfx/instr.data build/INSTR.BIN 320 240 1 0 1 1
 
 field:
 	node tools/starfield.js

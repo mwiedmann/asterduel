@@ -90,6 +90,7 @@ zsmreserved: .res 256
 
 start:
     jsr show_title
+    jsr show_instr
     jsr sound_init
     jsr load_mainpal
     jsr load_sprites
