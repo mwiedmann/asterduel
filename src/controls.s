@@ -1,11 +1,23 @@
 .ifndef CONTROLS_S
 CONTROLS_S = 1
 
-check_controls_ship_1:
+joy1:
     lda #0
     jsr JOYGET
     sta joy_a ; hold the joystick A state
     stx joy_x ; hold the joystick X state
+    lda #1
+    jsr JOYGET
+    and joy_a
+    sta joy_a
+    txa
+    and joy_x
+    sta joy_x
+    lda joy_a
+    rts
+
+check_controls_ship_1:
+    jsr joy1
     lda thrustwait_1
     cmp #0 ; We only thrust the ship every few ticks (otherwise it takes off SUPER fast)
     beq @thrust_ready
@@ -104,7 +116,7 @@ check_controls_ship_1:
     rts
 
 check_controls_ship_2:
-    lda #1
+    lda #2
     jsr JOYGET
     sta joy_a ; hold the joystick A state
     stx joy_x ; hold the joystick X state
